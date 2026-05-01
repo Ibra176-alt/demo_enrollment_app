@@ -1,46 +1,76 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 
-const LeafIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 68C12 68 20 30 60 14C60 14 64 50 28 62" fill="#4ade80"/>
-    <path d="M12 68C12 68 20 30 60 14" stroke="#d4ed5a" strokeWidth="3" strokeLinecap="round"/>
-  </svg>
-)
+const NAV_ITEMS = [
+  { to: '/',        icon: '⊞',  label: 'Dashboard' },
+  { to: '/farmers', icon: '🌿', label: 'Farmers'   },
+  { to: '/offline', icon: '📴', label: 'Offline'   },
+  { to: '/reports', icon: '📊', label: 'Reports'   },
+]
+
+function getToday() {
+  return new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+}
 
 export default function Navbar({ offlineCount }) {
-  return (
-    <nav className="navbar">
-      <NavLink to="/" className="navbar-brand">
-        <LeafIcon />
-        <div>
-          <div className="navbar-title">HERVeg.05</div>
-          <div className="navbar-subtitle">small plots, big impact.</div>
-        </div>
-      </NavLink>
+  const { pathname } = useLocation()
 
-      <ul className="nav-links">
-        <li>
-          <NavLink to="/" end className={({ isActive }) => isActive ? 'active' : ''}>
-            <span>🏠</span>
-            <span className="nav-label">Home</span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/farmers" className={({ isActive }) => isActive ? 'active' : ''}>
-            <span>🌿</span>
-            <span className="nav-label">Farmers</span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/offline" className={({ isActive }) => isActive ? 'active' : ''}>
-            <span>📴</span>
-            <span className="nav-label">Offline</span>
-            {offlineCount > 0 && (
-              <span className="nav-badge">{offlineCount}</span>
-            )}
-          </NavLink>
-        </li>
-      </ul>
-    </nav>
+  return (
+    <>
+      {/* ── Desktop top navbar ── */}
+      <nav className="navbar">
+        <NavLink to="/" className="navbar-brand">
+          <div className="brand-icon">🌿</div>
+          <div>
+            <div className="brand-text-main">HERVeg.05</div>
+            <div className="brand-text-sub">small plots, big impact.</div>
+          </div>
+        </NavLink>
+
+        <ul className="nav-links">
+          {NAV_ITEMS.map(({ to, icon, label }) => (
+            <li key={to}>
+              <NavLink
+                to={to}
+                end={to === '/'}
+                className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+              >
+                <span className="nav-icon">{icon}</span>
+                <span>{label}</span>
+                {label === 'Offline' && offlineCount > 0 && (
+                  <span className="nav-badge">{offlineCount}</span>
+                )}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+
+        <div className="navbar-right">
+          <span className="navbar-date">{getToday()}</span>
+        </div>
+      </nav>
+
+      {/* ── Mobile bottom navbar ── */}
+      <nav className="bottom-nav">
+        <div className="bottom-nav-inner">
+          {NAV_ITEMS.map(({ to, icon, label }) => {
+            const isActive = to === '/' ? pathname === '/' : pathname.startsWith(to)
+            return (
+              <NavLink
+                key={to}
+                to={to}
+                className={`bottom-nav-item${isActive ? ' active' : ''}`}
+              >
+                {isActive && <span className="bottom-nav-dot" />}
+                <span className="nav-icon">{icon}</span>
+                <span>{label}</span>
+                {label === 'Offline' && offlineCount > 0 && (
+                  <span className="bottom-nav-badge">{offlineCount}</span>
+                )}
+              </NavLink>
+            )
+          })}
+        </div>
+      </nav>
+    </>
   )
 }

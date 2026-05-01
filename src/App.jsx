@@ -1,33 +1,32 @@
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Home from './pages/Home'
+import Dashboard from './pages/Dashboard'
 import Farmers from './pages/Farmers'
 import OfflineFarmers from './pages/OfflineFarmers'
+import Reports from './pages/Reports'
 import { useFarmers } from './hooks/useFarmers'
 
 export default function App() {
   const {
-    farmers,
-    offlineFarmers,
-    syncedFarmers,
-    addFarmer,
-    syncFarmer,
-    syncAll,
-    deleteFarmer,
+    farmers, offlineFarmers, syncedFarmers,
+    activity, addFarmer, updateFarmer, deleteFarmer,
+    syncFarmer, syncAll,
   } = useFarmers()
 
   return (
     <div className="layout">
       <Navbar offlineCount={offlineFarmers.length} />
+
       <main className="main-content">
         <Routes>
           <Route
             path="/"
             element={
-              <Home
+              <Dashboard
                 farmers={farmers}
                 offlineFarmers={offlineFarmers}
                 syncedFarmers={syncedFarmers}
+                activity={activity}
               />
             }
           />
@@ -37,6 +36,7 @@ export default function App() {
               <Farmers
                 farmers={farmers}
                 addFarmer={addFarmer}
+                updateFarmer={updateFarmer}
                 deleteFarmer={deleteFarmer}
               />
             }
@@ -48,6 +48,15 @@ export default function App() {
                 offlineFarmers={offlineFarmers}
                 syncFarmer={syncFarmer}
                 syncAll={syncAll}
+              />
+            }
+          />
+          <Route
+            path="/reports"
+            element={
+              <Reports
+                farmers={farmers}
+                activity={activity}
               />
             }
           />
