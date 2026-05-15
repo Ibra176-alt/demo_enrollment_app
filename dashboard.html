@@ -145,8 +145,15 @@ body::before {
 .tab-btn.active::after {
   content: '';
   position: absolute; bottom: -1px; left: 14px; right: 14px;
-  height: 2px; background: var(--green-600);
+  height: 2.5px;
+  background: linear-gradient(90deg, var(--green-600), var(--yellow-green));
   border-radius: 2px 2px 0 0;
+  animation: tabGlow 2.2s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(46,139,74,0.55);
+}
+@keyframes tabGlow {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(46,139,74,0.55); }
+  50%       { opacity: 0.75; box-shadow: 0 0 14px rgba(200,230,58,0.65); }
 }
 .tab-icon { font-size: 15px; }
 
@@ -212,23 +219,37 @@ body::before {
   padding: 0 10px;
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-sm);
-  background: var(--gray-50);
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   font-family: var(--font); font-size: 12px; font-weight: 500;
   color: var(--gray-700);
   cursor: pointer;
-  transition: var(--transition);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
   outline: none;
   min-width: 120px;
 }
-.filter-select:focus { border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(46,139,74,0.1); }
+.filter-select:focus {
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 3px rgba(46,139,74,0.15), 0 2px 8px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.92);
+}
 .filter-date {
   height: 34px; padding: 0 10px;
   border: 1px solid var(--gray-200); border-radius: var(--radius-sm);
-  background: var(--gray-50);
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   font-family: var(--font); font-size: 12px; color: var(--gray-700);
   outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.filter-date:focus { border-color: var(--green-600); }
+.filter-date:focus {
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 3px rgba(46,139,74,0.15), 0 2px 8px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+}
 .filter-sep { width: 1px; height: 24px; background: var(--gray-200); flex-shrink: 0; }
 .filter-clear {
   height: 34px; padding: 0 12px;
@@ -247,11 +268,22 @@ body::before {
 }
 
 /* ─── TAB PAGES ──────────────────────────────────────────── */
-.tab-page { display: none; animation: fadeInUp 0.35s ease; }
-.tab-page.active { display: block; }
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+.tab-page { display: none; }
+.tab-page.active {
+  display: block;
+  animation: tabReveal 0.38s cubic-bezier(0.34,1.20,0.64,1) both;
+}
+@keyframes tabReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.970) translateY(14px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
 }
 
 /* ─── SECTION HEADERS ────────────────────────────────────── */
@@ -276,6 +308,22 @@ body::before {
   gap: 16px;
   margin-bottom: 28px;
 }
+/* Staggered cascade: each card fans in with a delay */
+.kpi-grid .kpi-card { animation: cardCascade 0.42s cubic-bezier(0.34,1.15,0.64,1) both; }
+.kpi-grid .kpi-card:nth-child(1)  { animation-delay: 0.04s; }
+.kpi-grid .kpi-card:nth-child(2)  { animation-delay: 0.08s; }
+.kpi-grid .kpi-card:nth-child(3)  { animation-delay: 0.12s; }
+.kpi-grid .kpi-card:nth-child(4)  { animation-delay: 0.16s; }
+.kpi-grid .kpi-card:nth-child(5)  { animation-delay: 0.20s; }
+.kpi-grid .kpi-card:nth-child(6)  { animation-delay: 0.24s; }
+.kpi-grid .kpi-card:nth-child(7)  { animation-delay: 0.28s; }
+.kpi-grid .kpi-card:nth-child(8)  { animation-delay: 0.32s; }
+.kpi-grid .kpi-card:nth-child(9)  { animation-delay: 0.36s; }
+.kpi-grid .kpi-card:nth-child(10) { animation-delay: 0.40s; }
+@keyframes cardCascade {
+  from { opacity:0; transform: scale(0.88) translateY(18px); }
+  to   { opacity:1; transform: scale(1)    translateY(0); }
+}
 .kpi-card {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur-light);
@@ -285,7 +333,17 @@ body::before {
   box-shadow: var(--kpi-glow);
   border: var(--glass-border);
   position: relative; overflow: hidden;
-  transition: var(--transition);
+  /* 3D tilt — JS sets --rx and --ry on each card via mousemove */
+  transform:
+    perspective(700px)
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    translateZ(0);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.25s cubic-bezier(0.4,0,0.2,1),
+    background 0.25s ease;
+  will-change: transform;
   cursor: default;
 }
 /* Subtle inner-light sheen at top */
@@ -293,11 +351,27 @@ body::before {
   content: ''; position: absolute;
   top: 0; left: 0; right: 0; height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+  pointer-events: none;
+}
+/* Specular highlight that follows tilt */
+.kpi-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(
+    circle at calc(50% + var(--mx,0px)) calc(30% + var(--my,0px)),
+    rgba(255,255,255,0.18) 0%,
+    transparent 60%
+  );
+  pointer-events: none; border-radius: inherit;
+  transition: background 0.1s;
 }
 .kpi-card:hover {
-  transform: translateY(-3px);
   box-shadow: var(--kpi-glow), var(--glass-shadow-hover);
   background: var(--glass-bg-strong);
+}
+/* Reset tilt smoothly on mouse-leave */
+.kpi-card.tilt-reset {
+  --rx: 0deg; --ry: 0deg;
+  transition: transform 0.45s cubic-bezier(0.34,1.2,0.64,1), box-shadow 0.25s ease, background 0.25s ease;
 }
 .kpi-card-header {
   display: flex; align-items: flex-start; justify-content: space-between;
@@ -350,10 +424,17 @@ body::before {
   padding: 22px;
   box-shadow: var(--glass-shadow);
   border: var(--glass-border);
-  transition: var(--transition);
+  transition: transform 0.28s cubic-bezier(0.34,1.1,0.64,1),
+              box-shadow 0.28s ease,
+              background 0.25s ease;
+  will-change: transform;
 }
 .chart-card:hover {
-  box-shadow: var(--glass-shadow-hover);
+  transform: scale(1.012) translateY(-2px);
+  box-shadow:
+    0 12px 40px rgba(46,139,74,0.12),
+    0 4px 16px rgba(0,0,0,0.06),
+    0 0 0 1px rgba(46,139,74,0.08);
   background: var(--glass-bg-strong);
 }
 .chart-card-header {
@@ -3756,15 +3837,51 @@ window.addEventListener('resize', () => {
   }, 200);
 });
 
-// GSAP microinteraction: KPI card hover depth
-document.addEventListener('mouseover', e => {
-  const card = e.target.closest('.kpi-card');
-  if (card && window.gsap) gsap.to(card, { y:-4, boxShadow:'0 16px 48px rgba(0,0,0,0.12)', duration:0.2, ease:'power2.out' });
-});
-document.addEventListener('mouseout', e => {
-  const card = e.target.closest('.kpi-card');
-  if (card && window.gsap) gsap.to(card, { y:0, boxShadow:'0 4px 16px rgba(0,0,0,0.08)', duration:0.2, ease:'power2.out' });
-});
+// 3D perspective tilt on KPI cards
+(function() {
+  const MAX_TILT = 7; // degrees
+  function onCardMove(e) {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const cx = rect.left + rect.width  / 2;
+    const cy = rect.top  + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width  / 2);  // -1 to +1
+    const dy = (e.clientY - cy) / (rect.height / 2);  // -1 to +1
+    const rx =  -dy * MAX_TILT;
+    const ry =   dx * MAX_TILT;
+    // Specular highlight offset (px)
+    const mx = dx * 20;
+    const my = dy * 20;
+    card.style.setProperty('--rx', rx.toFixed(2) + 'deg');
+    card.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+    card.style.setProperty('--mx', mx.toFixed(1) + 'px');
+    card.style.setProperty('--my', my.toFixed(1) + 'px');
+    card.classList.remove('tilt-reset');
+  }
+  function onCardLeave(e) {
+    const card = e.currentTarget;
+    card.classList.add('tilt-reset');
+    card.style.removeProperty('--rx');
+    card.style.removeProperty('--ry');
+    card.style.removeProperty('--mx');
+    card.style.removeProperty('--my');
+    // Clean up class after transition
+    card.addEventListener('transitionend', () => card.classList.remove('tilt-reset'), { once: true });
+  }
+  // Attach on initial load and re-attach whenever KPI cards are re-rendered
+  function attachTilt() {
+    document.querySelectorAll('.kpi-card').forEach(card => {
+      if (card._tiltAttached) return;
+      card.addEventListener('mousemove', onCardMove);
+      card.addEventListener('mouseleave', onCardLeave);
+      card._tiltAttached = true;
+    });
+  }
+  // Use MutationObserver to catch dynamically rendered cards
+  const mo = new MutationObserver(attachTilt);
+  mo.observe(document.getElementById('main') || document.body, { childList: true, subtree: true });
+  document.addEventListener('DOMContentLoaded', attachTilt);
+})();
 </script>
 </body>
 </html>
