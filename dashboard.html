@@ -8,8 +8,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root {
@@ -428,6 +432,121 @@ body {
 }
 .placeholder-icon { font-size: 64px; }
 .placeholder-label { font-size: 16px; font-weight: 600; color: var(--gray-400); }
+
+/* ─── MAP ────────────────────────────────────────────────── */
+.map-container {
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-md); border: 1px solid var(--gray-100);
+}
+.leaflet-container { font-family: var(--font) !important; }
+.map-legend {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  padding: 12px 0 4px; font-size: 12px; color: var(--gray-500);
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.map-toggle-group {
+  display: flex; gap: 6px; margin-bottom: 12px;
+}
+.map-toggle {
+  padding: 6px 14px; border-radius: var(--radius-full);
+  font-size: 12px; font-weight: 500; cursor: pointer;
+  border: 1.5px solid var(--gray-200); background: var(--white);
+  color: var(--gray-600); transition: var(--transition);
+}
+.map-toggle.active { background: var(--green-800); color: var(--white); border-color: var(--green-800); }
+
+/* ─── PIPELINE ───────────────────────────────────────────── */
+.funnel-stage {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 20px; margin-bottom: 8px;
+  background: var(--white); border-radius: var(--radius-md);
+  border: 1px solid var(--gray-100); box-shadow: var(--shadow-sm);
+  position: relative; overflow: hidden;
+}
+.funnel-stage::before {
+  content:''; position:absolute; left:0; top:0; bottom:0;
+  background: linear-gradient(90deg, var(--green-600), var(--yellow-green));
+  opacity: 0.08; width: var(--fill, 100%);
+}
+.funnel-stage-icon { font-size: 22px; width: 36px; text-align: center; flex-shrink: 0; }
+.funnel-stage-label { font-size: 13px; font-weight: 600; color: var(--gray-700); flex: 1; }
+.funnel-stage-count { font-size: 22px; font-weight: 800; color: var(--gray-800); }
+.funnel-stage-pct { font-size: 12px; color: var(--gray-400); margin-left: 6px; }
+.funnel-arrow { text-align: center; color: var(--gray-300); font-size: 18px; margin: -4px 0; padding-left: 56px; }
+.drop-off-bar {
+  height: 6px; border-radius: var(--radius-full);
+  background: var(--gray-100); margin: 4px 0 12px; overflow: hidden;
+}
+.drop-off-fill { height: 100%; border-radius: var(--radius-full); background: linear-gradient(90deg,var(--green-600),var(--yellow-green)); transition: width 1s ease; }
+
+/* ─── AI INSIGHTS ────────────────────────────────────────── */
+.ai-header {
+  background: linear-gradient(135deg, var(--green-900), var(--green-700));
+  border-radius: var(--radius-xl); padding: 28px 32px;
+  margin-bottom: 24px; color: var(--white); position: relative; overflow: hidden;
+}
+.ai-header::before {
+  content:''; position:absolute; right:-40px; top:-40px;
+  width:200px; height:200px; border-radius:50%;
+  background: rgba(200,230,58,0.08);
+}
+.ai-header::after {
+  content:''; position:absolute; right:60px; bottom:-60px;
+  width:140px; height:140px; border-radius:50%;
+  background: rgba(200,230,58,0.05);
+}
+.ai-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; background: rgba(200,230,58,0.2);
+  border-radius: var(--radius-full); font-size: 11px; font-weight: 700;
+  color: var(--yellow-green); margin-bottom: 12px; letter-spacing: 0.5px;
+}
+.ai-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+.ai-subtitle { font-size: 13px; opacity: 0.7; }
+.ai-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 22px; box-shadow: var(--shadow-md);
+  border: 1px solid var(--gray-100); margin-bottom: 16px;
+}
+.ai-card-title {
+  font-size: 15px; font-weight: 700; color: var(--gray-800);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.ai-finding {
+  padding: 12px 16px; border-radius: var(--radius-sm);
+  margin-bottom: 10px; border-left: 3px solid transparent;
+  font-size: 13px; line-height: 1.6; color: var(--gray-700);
+}
+.ai-finding.positive { background:#f0fdf4; border-color:#22c55e; }
+.ai-finding.warning  { background:#fffbeb; border-color:#f59e0b; }
+.ai-finding.critical { background:#fef2f2; border-color:#ef4444; }
+.ai-finding.info     { background:#eff6ff; border-color:#3b82f6; }
+.ai-finding strong   { font-weight: 700; }
+.rec-card {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 16px; border-radius: var(--radius-md);
+  background: var(--gray-50); border: 1px solid var(--gray-100);
+  margin-bottom: 10px; transition: var(--transition);
+}
+.rec-card:hover { background: var(--white); box-shadow: var(--shadow-sm); }
+.rec-priority {
+  padding: 3px 10px; border-radius: var(--radius-full);
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  flex-shrink: 0; margin-top: 2px;
+}
+.rec-priority.high   { background:#fef2f2; color:#dc2626; }
+.rec-priority.medium { background:#fffbeb; color:#d97706; }
+.rec-priority.low    { background:#f0fdf4; color:#16a34a; }
+.rec-text { font-size: 13px; color: var(--gray-700); line-height: 1.5; }
+.rec-text strong { color: var(--gray-900); font-weight: 700; }
+.exec-summary {
+  background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+  border-radius: var(--radius-lg); padding: 24px;
+  border: 1px solid var(--gray-200); margin-bottom: 24px;
+}
+.exec-summary-title { font-size: 13px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+.exec-summary-text { font-size: 14px; color: var(--gray-700); line-height: 1.8; }
 
 /* ─── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 1024px) {
@@ -979,27 +1098,217 @@ body {
     <div class="insight-grid" id="del-insights"></div>
   </div>
 
-  <!-- ══ GEOGRAPHIC (Phase 5) ══════════════════════════ -->
+  <!-- ══ GEOGRAPHIC INTELLIGENCE ══════════════════════════ -->
   <div class="tab-page" id="tab-geo">
-    <div class="placeholder-page">
-      <div class="placeholder-icon">🗺️</div>
-      <div class="placeholder-label">Geographic Intelligence — Building Phase 5...</div>
+    <div class="section-header">
+      <div>
+        <div class="section-title">Geographic Intelligence</div>
+        <div class="section-subtitle">Spatial farmer distribution, zone penetration &amp; village clustering</div>
+      </div>
+      <span class="section-badge">● Live Map</span>
     </div>
+
+    <div class="kpi-grid" id="geo-kpis"></div>
+
+    <!-- Map view toggles -->
+    <div class="map-toggle-group">
+      <button class="map-toggle active" id="toggle-clusters" onclick="GeoEngine.showMode('clusters')">📍 Farmer Clusters</button>
+      <button class="map-toggle" id="toggle-heat"     onclick="GeoEngine.showMode('heat')">🔥 Heat Intensity</button>
+      <button class="map-toggle" id="toggle-zones"    onclick="GeoEngine.showMode('zones')">🗺️ Zone View</button>
+    </div>
+
+    <!-- Interactive Map -->
+    <div class="chart-card" style="margin-bottom:20px;padding:16px;">
+      <div class="chart-card-header">
+        <div><div class="chart-title">Farmer Geographic Distribution</div><div class="chart-subtitle" id="map-subtitle">Interactive cluster map — click markers for farmer details</div></div>
+        <button class="info-btn" onclick="showTooltip(event,'Geographic Map','Each pin = a registered farmer. Clusters show concentration areas. Toggle between Clusters, Heat Intensity, and Zone View modes.')">i</button>
+      </div>
+      <div id="geo-map" style="height:480px;border-radius:10px;" class="map-container"></div>
+      <div class="map-legend" id="map-legend"></div>
+    </div>
+
+    <!-- Zone + Village charts -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Zone Penetration Analysis</div><div class="chart-subtitle">Enrollment density per operational zone</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Zone Penetration','Farmer count per zone. Identifies under-served zones needing additional VANO deployment and outreach resources.')">i</button>
+        </div>
+        <div class="echart" id="geo-zone-penetration" style="height:260px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Top Villages by Enrollment</div><div class="chart-subtitle">Highest-density farming communities</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Village Density','Villages ranked by farmer count. High-density villages are program strongholds. Low-density villages show expansion opportunity.')">i</button>
+        </div>
+        <div class="echart" id="geo-village-density" style="height:260px"></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">VANO Territory Coverage</div><div class="chart-subtitle">Field officer reach per zone</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'VANO Coverage','Number of villages each VANO is covering. High village count per VANO may indicate overload. Use to optimize territory assignments.')">i</button>
+        </div>
+        <div class="echart" id="geo-vano-coverage" style="height:260px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Zone × Gender Matrix</div><div class="chart-subtitle">Gender balance across operational zones</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Zone Gender Matrix','Shows male vs female enrollment breakdown per zone. Identifies zones with gender imbalance needing targeted inclusion interventions.')">i</button>
+        </div>
+        <div class="echart" id="geo-gender-zone" style="height:260px"></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Package Preference by Zone</div><div class="chart-subtitle">Regional product demand variation</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Regional Package Demand','Shows which packages are most popular in each zone. Enables zone-specific procurement and supply chain planning.')">i</button>
+        </div>
+        <div class="echart" id="geo-package-zone" style="height:260px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Household Size by Zone</div><div class="chart-subtitle">Average family reach per operational zone</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Household Size by Zone','Average number of household members per enrolled farmer, broken down by zone. Shows which zones have larger indirect reach.')">i</button>
+        </div>
+        <div class="echart" id="geo-hh-zone" style="height:260px"></div>
+      </div>
+    </div>
+
+    <div class="insight-grid" id="geo-insights"></div>
   </div>
 
-  <!-- ══ PIPELINE (Phase 5/6) ══════════════════════════ -->
+  <!-- ══ PIPELINE & CONVERSION ANALYTICS ═══════════════════ -->
   <div class="tab-page" id="tab-pipeline">
-    <div class="placeholder-page">
-      <div class="placeholder-icon">🔄</div>
-      <div class="placeholder-label">Pipeline & Conversion Analytics — Building Phase 6...</div>
+    <div class="section-header">
+      <div>
+        <div class="section-title">Pipeline &amp; Conversion Analytics</div>
+        <div class="section-subtitle">Enrollment → Payment → Delivery conversion funnel and drop-off analysis</div>
+      </div>
+      <span class="section-badge">● Conversion Live</span>
     </div>
+
+    <div class="kpi-grid" id="pipe-kpis"></div>
+
+    <!-- Main funnel -->
+    <div class="chart-grid">
+      <div class="chart-card" style="grid-column:1/-1">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Program Conversion Funnel</div><div class="chart-subtitle">Enrollment → Payment → Delivery pipeline with drop-off rates</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Conversion Funnel','Shows how many farmers progress through each stage of the program. Drop-offs between stages identify where farmers are being lost.')">i</button>
+        </div>
+        <div id="pipe-funnel-stages"></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Enrollment → Payment Rate by Zone</div><div class="chart-subtitle">Which zones convert enrollments to payments best</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Zone Conversion Rate','Farmers who made payment ÷ Total enrolled per zone. Highlights zones where farmers are dropping off before payment.')">i</button>
+        </div>
+        <div class="echart" id="pipe-zone-conversion" style="height:280px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Payment → Delivery Completion by Zone</div><div class="chart-subtitle">Fulfillment rate per zone</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Delivery Completion Rate','Farmers delivered ÷ Farmers paid per zone. Reveals logistics gaps where payments are not converting to deliveries.')">i</button>
+        </div>
+        <div class="echart" id="pipe-delivery-conversion" style="height:280px"></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Monthly Conversion Velocity</div><div class="chart-subtitle">How quickly enrolled farmers convert to paid status</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Conversion Velocity','Tracks enrollment and payment counts month-over-month. Gap between lines = unconverted farmers still in pipeline.')">i</button>
+        </div>
+        <div class="echart" id="pipe-velocity" style="height:280px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Package Conversion Rate</div><div class="chart-subtitle">Enrolled vs delivered per package type</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Package Conversion','Compares enrollment vs delivery count per package. Large gaps indicate supply or logistics issues for specific packages.')">i</button>
+        </div>
+        <div class="echart" id="pipe-package-conversion" style="height:280px"></div>
+      </div>
+    </div>
+
+    <div class="insight-grid" id="pipe-insights"></div>
   </div>
 
-  <!-- ══ AI INSIGHTS (Phase 6) ════════════════════════ -->
+  <!-- ══ AI INSIGHTS & RECOMMENDATIONS ════════════════════ -->
   <div class="tab-page" id="tab-ai">
-    <div class="placeholder-page">
-      <div class="placeholder-icon">🤖</div>
-      <div class="placeholder-label">AI Insights & Recommendations — Building Phase 6...</div>
+    <div class="ai-header">
+      <div class="ai-badge">🤖 AI Analytics Engine</div>
+      <div class="ai-title">Strategic Intelligence &amp; Recommendations</div>
+      <div class="ai-subtitle">Auto-generated insights from live spreadsheet data — updated every refresh cycle</div>
+    </div>
+
+    <!-- Executive Summary -->
+    <div class="exec-summary" id="ai-exec-summary">
+      <div class="exec-summary-title">📋 Executive Summary</div>
+      <div class="exec-summary-text" id="ai-exec-text">Loading program intelligence...</div>
+    </div>
+
+    <div class="chart-grid" style="margin-bottom:20px;">
+      <div class="ai-card">
+        <div class="ai-card-title">📈 Key Trends</div>
+        <div id="ai-trends"></div>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">⚠️ Risk Alerts &amp; Anomalies</div>
+        <div id="ai-risks"></div>
+      </div>
+    </div>
+
+    <div class="chart-grid" style="margin-bottom:20px;">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Program Health Score</div><div class="chart-subtitle">Composite score across all KPI dimensions</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Program Health Score','Weighted composite of enrollment growth, collection rate, delivery efficiency, gender inclusion, and satisfaction. 100 = optimal across all dimensions.')">i</button>
+        </div>
+        <div class="echart" id="ai-health-radar" style="height:280px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Performance Anomaly Detection</div><div class="chart-subtitle">KPI values vs expected benchmarks</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Anomaly Detection','Compares current KPI values against calculated program benchmarks. Red bars = underperforming. Green = outperforming.')">i</button>
+        </div>
+        <div class="echart" id="ai-anomaly" style="height:280px"></div>
+      </div>
+    </div>
+
+    <div class="chart-grid" style="margin-bottom:20px;">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Growth Opportunity Matrix</div><div class="chart-subtitle">Zone performance vs potential</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Growth Opportunity Matrix','Plots zones by enrollment count vs collection rate. Top-right = star zones. Bottom-left = urgent attention zones.')">i</button>
+        </div>
+        <div class="echart" id="ai-opportunity" style="height:280px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Multi-Dimensional KPI Trend</div><div class="chart-subtitle">Enrollment, payments &amp; deliveries over time</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'KPI Trend Comparison','Overlays monthly enrollment, payment, and delivery counts. Gaps between lines reveal pipeline bottlenecks.')">i</button>
+        </div>
+        <div class="echart" id="ai-trend-comparison" style="height:280px"></div>
+      </div>
+    </div>
+
+    <div class="ai-card">
+      <div class="ai-card-title">🎯 Strategic Recommendations</div>
+      <div id="ai-recommendations"></div>
+    </div>
+
+    <div class="ai-card">
+      <div class="ai-card-title">🏆 Growth Opportunities</div>
+      <div id="ai-opportunities"></div>
     </div>
   </div>
 
@@ -1648,12 +1957,21 @@ function switchTab(id) {
 
 function renderActiveTab() {
   const tab = AppState.activeTab;
-  if (tab === 'overview')   OverviewEngine.render();
-  if (tab === 'enrollment' && window.EnrollmentEngine) EnrollmentEngine.render();
-  if (tab === 'payment'    && window.PaymentEngine)    PaymentEngine.render();
-  if (tab === 'delivery'   && window.DeliveryEngine)   DeliveryEngine.render();
-  if (tab === 'geo'        && window.GeoEngine)        GeoEngine.render();
-  if (tab === 'ai'         && window.AIEngine)         AIEngine.render();
+  if (tab === 'overview')  OverviewEngine.render();
+  if (tab === 'enrollment') EnrollmentEngine.render();
+  if (tab === 'payment')    PaymentEngine.render();
+  if (tab === 'delivery')   DeliveryEngine.render();
+  if (tab === 'geo') {
+    GeoEngine.render();
+    // Map needs a resize tick after tab becomes visible
+    setTimeout(() => { if (GeoEngine._map) GeoEngine._map.invalidateSize(); }, 100);
+  }
+  if (tab === 'pipeline') PipelineEngine.render();
+  if (tab === 'ai')       AIEngine.render();
+  // Resize all echart instances after tab switch
+  setTimeout(() => {
+    Object.values(AppState.charts).forEach(c => { try { c.resize(); } catch(e){} });
+  }, 60);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -2615,8 +2933,768 @@ const DeliveryEngine = {
   }
 };
 
+/* ═══════════════════════════════════════════════════════════
+   GEOGRAPHIC INTELLIGENCE ENGINE  (Phase 5)
+═══════════════════════════════════════════════════════════ */
+const GeoEngine = {
+  _map: null,
+  _layers: { clusters: null, heat: null, zones: null },
+  _mode: 'clusters',
+  _rendered: false,
+
+  render() {
+    const f = AppState.filtered.farmers;
+    if (!f.length) return;
+
+    // Geo KPIs
+    const withCoords = f.filter(r => this._validCoord(r));
+    const zones      = Utils.unique(f,'Zone').length;
+    const villages   = Utils.unique(f,'Village').length;
+    const vanoCounts = Utils.countBy(f,'VANO');
+    const topZone    = (() => { const c=Utils.countBy(f,'Zone'); const e=Object.entries(c).sort((a,b)=>b[1]-a[1]); return e.length?e[0]:['—',0]; })();
+
+    KPIEngine.render('geo-kpis',[
+      { icon:'📍', label:'Farmers Mapped',     value:Utils.fmtNum(withCoords.length),  rawValue:withCoords.length,  format:'num',
+        info:'Farmers with valid GPS coordinates (latitude & longitude) available for map display.' },
+      { icon:'🗺️', label:'Zones Covered',      value:Utils.fmtNum(zones),             rawValue:zones,              format:'num',
+        info:'Number of unique operational zones with enrolled farmers.' },
+      { icon:'🏘️', label:'Villages Reached',   value:Utils.fmtNum(villages),          rawValue:villages,           format:'num',
+        info:'Unique villages with at least one enrolled farmer. Core rural penetration metric.' },
+      { icon:'🏆', label:'Top Zone',           value:topZone[0],                       rawValue:topZone[1],
+        info:`Zone with the highest number of enrolled farmers (${topZone[1]} farmers). Identifies the strongest operational territory.` },
+      { icon:'👤', label:'Active VANOs',       value:Utils.fmtNum(Object.keys(vanoCounts).filter(k=>k&&k!=='Unknown').length), rawValue:0,
+        info:'Number of Village Agent Officers with at least one enrolled farmer.' },
+      { icon:'📏', label:'Coverage Rate',      value:Utils.fmtPct(f.length>0?(withCoords.length/f.length)*100:0), rawValue:0, format:'pct',
+        info:'Percentage of enrolled farmers with GPS coordinates recorded. Higher = better geographic data quality.' }
+    ]);
+
+    this._initMap(f, withCoords);
+    this._zonePenetration(f);
+    this._villageDensity(f);
+    this._vanoTerritory(f);
+    this._genderZone(f);
+    this._packageZone(f);
+    this._hhZone(f);
+    this._renderInsights(f,{ zones, villages, withCoords: withCoords.length, topZone });
+    this._rendered = true;
+  },
+
+  _validCoord(r) {
+    const lat = parseFloat(r['LATITUDE']||r['Latitude']||'');
+    const lng = parseFloat(r['LONGITUDE']||r['Longitude']||'');
+    return !isNaN(lat) && !isNaN(lng) && lat!==0 && lng!==0 && Math.abs(lat)<=90 && Math.abs(lng)<=180;
+  },
+
+  _getCoord(r) {
+    return [
+      parseFloat(r['LATITUDE']||r['Latitude']),
+      parseFloat(r['LONGITUDE']||r['Longitude'])
+    ];
+  },
+
+  _initMap(f, withCoords) {
+    const mapEl = document.getElementById('geo-map');
+    if (!mapEl) return;
+
+    if (this._map) { this._map.remove(); this._map = null; }
+    // Tanzania center
+    const center = withCoords.length > 0
+      ? this._centroid(withCoords.map(r => this._getCoord(r)))
+      : [-6.369, 34.889];
+
+    this._map = L.map('geo-map', { zoomControl: true, attributionControl: false }).setView(center, withCoords.length > 50 ? 8 : 10);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution:'© OpenStreetMap © CartoDB', subdomains:'abcd', maxZoom:19
+    }).addTo(this._map);
+
+    // Build layers
+    this._buildClusterLayer(f, withCoords);
+    this._buildHeatLayer(withCoords);
+    this._buildZoneLayer(f, withCoords);
+
+    this.showMode('clusters');
+
+    // Add attribution
+    L.control.attribution({ prefix: '© HERVeg.05' }).addTo(this._map);
+  },
+
+  _buildClusterLayer(f, withCoords) {
+    if (!window.L || !L.markerClusterGroup) return;
+    const zoneColors = {};
+    const zones = Utils.unique(f,'Zone');
+    zones.forEach((z,i) => { zoneColors[z] = ChartEngine.COLORS[i % ChartEngine.COLORS.length]; });
+
+    const group = L.markerClusterGroup({
+      chunkedLoading: true,
+      maxClusterRadius: 50,
+      iconCreateFunction: cluster => {
+        const c = cluster.getChildCount();
+        const size = c > 100 ? 44 : c > 50 ? 36 : 28;
+        return L.divIcon({
+          html: `<div style="width:${size}px;height:${size}px;background:var(--green-800);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:${c>99?11:13}px;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.2)">${c}</div>`,
+          className:'', iconSize:[size,size], iconAnchor:[size/2,size/2]
+        });
+      }
+    });
+
+    withCoords.forEach(r => {
+      const [lat,lng] = this._getCoord(r);
+      const zone = r['Zone']||'Unknown';
+      const color = zoneColors[zone] || '#2E8B4A';
+      const marker = L.circleMarker([lat,lng], {
+        radius:7, fillColor:color, fillOpacity:0.85, color:'#fff', weight:1.5
+      });
+      marker.bindPopup(`
+        <div style="font-family:Inter,sans-serif;min-width:180px;">
+          <div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#1B6B2B">${r['NAME']||'Farmer'}</div>
+          <div style="font-size:12px;color:#6b7280;line-height:1.8">
+            📍 ${r['Village']||'—'} · ${r['Zone']||'—'}<br>
+            📦 ${r['PACKAGE']||'—'}<br>
+            ♀ ${r['GENDER']||'—'}<br>
+            👤 ${r['VANO']||'—'}
+          </div>
+        </div>`, { maxWidth:220 });
+      group.addLayer(marker);
+    });
+    this._layers.clusters = group;
+
+    // Legend
+    const el = document.getElementById('map-legend');
+    if (el) {
+      el.innerHTML = Object.entries(zoneColors).slice(0,8).map(([z,c])=>
+        `<div class="legend-item"><div class="legend-dot" style="background:${c}"></div>${z}</div>`
+      ).join('');
+    }
+  },
+
+  _buildHeatLayer(withCoords) {
+    if (!window.L || !L.heatLayer) return;
+    const points = withCoords.map(r => { const [lat,lng]=this._getCoord(r); return [lat,lng,0.5]; });
+    this._layers.heat = L.heatLayer(points, { radius:25, blur:20, maxZoom:14, gradient:{0.2:'#2E8B4A',0.5:'#c8e63a',0.8:'#f0c040',1:'#e53e3e'} });
+  },
+
+  _buildZoneLayer(f, withCoords) {
+    if (!window.L) return;
+    const zoneGroups = Utils.groupBy(withCoords, 'Zone');
+    const group = L.layerGroup();
+    const colors = ChartEngine.COLORS;
+    Object.entries(zoneGroups).forEach(([zone,farmers],i) => {
+      if (!farmers.length || zone==='Unknown') return;
+      const coords = farmers.map(r => this._getCoord(r));
+      const center = this._centroid(coords);
+      const count  = farmers.length;
+      const r = Math.min(Math.max(Math.sqrt(count) * 1200, 2000), 20000);
+      L.circle(center, { radius:r, color:colors[i%colors.length], fillColor:colors[i%colors.length], fillOpacity:0.15, weight:2 })
+        .bindTooltip(`<strong>${zone}</strong><br>${count} farmers`, { permanent:false })
+        .addTo(group);
+      L.marker(center, { icon: L.divIcon({
+        html:`<div style="background:${colors[i%colors.length]};color:#fff;padding:4px 10px;border-radius:20px;font-family:Inter,sans-serif;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.2)">${zone} (${count})</div>`,
+        className:'', iconAnchor:[50,12]
+      })}).addTo(group);
+    });
+    this._layers.zones = group;
+  },
+
+  showMode(mode) {
+    if (!this._map) return;
+    ['clusters','heat','zones'].forEach(m => {
+      const layer = this._layers[m];
+      if (layer && this._map.hasLayer(layer)) this._map.removeLayer(layer);
+      const btn = document.getElementById('toggle-'+m);
+      if (btn) btn.classList.remove('active');
+    });
+    this._mode = mode;
+    const layer = this._layers[mode];
+    if (layer) layer.addTo(this._map);
+    const btn = document.getElementById('toggle-'+mode);
+    if (btn) btn.classList.add('active');
+    const sub = document.getElementById('map-subtitle');
+    if (sub) {
+      const labels = { clusters:'Interactive cluster map — click markers for farmer details', heat:'Heat intensity map — darker = higher farmer concentration', zones:'Zone boundary visualization — circle size = enrollment density' };
+      sub.textContent = labels[mode] || '';
+    }
+  },
+
+  _centroid(coords) {
+    const lat = coords.reduce((s,c)=>s+c[0],0)/coords.length;
+    const lng = coords.reduce((s,c)=>s+c[1],0)/coords.length;
+    return [lat,lng];
+  },
+
+  _zonePenetration(f) {
+    const counts = Utils.countBy(f,'Zone');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]);
+    ChartEngine.barChart('geo-zone-penetration', entries.map(([k])=>k), [{ name:'Farmers', data:entries.map(([,v])=>v) }]);
+  },
+
+  _villageDensity(f) {
+    const counts = Utils.countBy(f,'Village');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,15);
+    ChartEngine.hBarChart('geo-village-density', entries.map(([k])=>k), entries.map(([,v])=>v));
+  },
+
+  _vanoTerritory(f) {
+    const byVano = {};
+    f.forEach(r => { const v=r['VANO']||'Unknown'; if (!byVano[v]) byVano[v]=new Set(); byVano[v].add(r['Village']); });
+    const entries = Object.entries(byVano).filter(([k])=>k&&k!=='Unknown').map(([k,s])=>[k,s.size]).sort((a,b)=>b[1]-a[1]).slice(0,12);
+    ChartEngine.hBarChart('geo-vano-coverage', entries.map(([k])=>k), entries.map(([,v])=>v));
+  },
+
+  _genderZone(f) {
+    const zones = Utils.unique(f,'Zone').filter(z=>z&&z!=='Unknown').sort();
+    const female = zones.map(z => f.filter(r=>r['Zone']===z&&r['GENDER']==='Female').length);
+    const male   = zones.map(z => f.filter(r=>r['Zone']===z&&r['GENDER']==='Male').length);
+    ChartEngine.barChart('geo-gender-zone', zones,
+      [{ name:'Female', data:female, color:'#2E8B4A' }, { name:'Male', data:male, color:'#c8e63a' }],
+      { tooltip:{ ...ChartEngine.baseOption().tooltip, trigger:'axis' } }
+    );
+  },
+
+  _packageZone(f) {
+    const pkgs  = Utils.unique(f,'PACKAGE').filter(p=>p&&p!=='Unknown').slice(0,5);
+    const zones = Utils.unique(f,'Zone').filter(z=>z&&z!=='Unknown').sort();
+    const series = pkgs.map((pkg,i) => ({
+      name: pkg, data: zones.map(z => f.filter(r=>r['Zone']===z&&r['PACKAGE']===pkg).length),
+      extra:{ stack:'zone', barMaxWidth:24 }
+    }));
+    ChartEngine.barChart('geo-package-zone', zones, series,
+      { tooltip:{...ChartEngine.baseOption().tooltip, trigger:'axis'}, legend:{ bottom:0, textStyle:{color:'#6b7280',fontSize:11} } }
+    );
+  },
+
+  _hhZone(f) {
+    const zones = Utils.unique(f,'Zone').filter(z=>z&&z!=='Unknown').sort();
+    const avgs  = zones.map(z => {
+      const zf = f.filter(r=>r['Zone']===z);
+      return zf.length ? parseFloat((Utils.sumBy(zf,'MEMBERS IN HOUSEHOLD')/zf.length).toFixed(1)) : 0;
+    });
+    ChartEngine.barChart('geo-hh-zone', zones, [{ name:'Avg HH Size', data:avgs, color:'#3aad5c' }]);
+  },
+
+  _renderInsights(f,{ zones, villages, withCoords, topZone }) {
+    const el = document.getElementById('geo-insights');
+    if (!el) return;
+    const total = f.length;
+    const geoRate = total > 0 ? (withCoords/total)*100 : 0;
+    const topVillage = (() => { const c=Utils.countBy(f,'Village'); const e=Object.entries(c).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]); return e.length?e[0]:['—',0]; })();
+    const insights = [
+      { icon:'🗺️', type:'green', title:`${zones} Zones · ${villages} Villages Mapped`,
+        text:`Program spans ${zones} operational zones across ${villages} unique villages. ${Utils.fmtPct(geoRate)} of farmers have GPS coordinates for spatial analysis.` },
+      { icon:'🏆', type:'green', title:`Top Zone: ${topZone[0]} (${topZone[1]} farmers)`,
+        text:`${topZone[0]} leads all zones in enrollment count. Deploy additional resources to replicate success factors in lower-performing zones.` },
+      { icon:'📍', type:'green', title:`Strongest Village: ${topVillage[0]} (${topVillage[1]} farmers)`,
+        text:`This village has the highest enrollment density. It can serve as a community model and referral hub for neighboring villages.` },
+      geoRate < 80 ? { icon:'⚠️', type:'yellow', title:'GPS Data Coverage Below 80%',
+        text:`Only ${Utils.fmtPct(geoRate)} of farmers have GPS coordinates. Encourage VANOs to capture latitude/longitude during enrollment for full spatial analytics.` } : null
+    ].filter(Boolean);
+    el.innerHTML = insights.map(i=>`<div class="insight-card"><div class="insight-icon ${i.type}">${i.icon}</div><div><div class="insight-title">${i.title}</div><div class="insight-text">${i.text}</div></div></div>`).join('');
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   PIPELINE & CONVERSION ENGINE  (Phase 5/6)
+═══════════════════════════════════════════════════════════ */
+const PipelineEngine = {
+  render() {
+    const f = AppState.filtered.farmers;
+    const p = AppState.filtered.payments;
+    const d = AppState.filtered.delivery;
+    if (!f.length) return;
+
+    const enrolled  = f.length;
+    const paid      = p.length;
+    const delivered = d.length;
+    const enrollToPayRate   = enrolled > 0 ? (paid/enrolled)*100 : 0;
+    const payToDelivRate    = paid > 0     ? (delivered/paid)*100 : 0;
+    const enrollToDelivRate = enrolled > 0 ? (delivered/enrolled)*100 : 0;
+    const dropEnrollPay  = enrolled - paid;
+    const dropPayDeliv   = Math.max(0, paid - delivered);
+
+    // Avg time metrics
+    const avgPayDays  = 0; // would need enrollment date on payments
+    const avgDelivDays = Utils.avgBy(d,'Enrollment to delivery Days');
+
+    KPIEngine.render('pipe-kpis',[
+      { icon:'👥', label:'Enrolled',               value:Utils.fmtNum(enrolled),          rawValue:enrolled,  format:'num',
+        info:'Total farmers registered in the program. Start of the pipeline.' },
+      { icon:'💳', label:'Converted to Payment',    value:Utils.fmtNum(paid),             rawValue:paid,      format:'num',
+        info:'Enrolled farmers who have a payment record. Measures enrollment-to-payment conversion.' },
+      { icon:'🚚', label:'Delivered',               value:Utils.fmtNum(delivered),         rawValue:delivered, format:'num',
+        info:'Farmers who have received their package delivery. End of pipeline.' },
+      { icon:'📊', label:'Enroll→Pay Rate',         value:Utils.fmtPct(enrollToPayRate),   rawValue:enrollToPayRate,  format:'pct',
+        info:'Percentage of enrolled farmers who have made at least one payment. Key conversion metric.' },
+      { icon:'📊', label:'Pay→Deliver Rate',        value:Utils.fmtPct(payToDelivRate),    rawValue:payToDelivRate,   format:'pct',
+        info:'Percentage of paying farmers who have received their package. Fulfillment conversion rate.' },
+      { icon:'📊', label:'End-to-End Rate',         value:Utils.fmtPct(enrollToDelivRate), rawValue:enrollToDelivRate,format:'pct',
+        info:'Farmers who completed the full pipeline (enrolled → paid → delivered) ÷ Total enrolled.' },
+      { icon:'⬇️', label:'Enroll Drop-offs',        value:Utils.fmtNum(dropEnrollPay),    rawValue:dropEnrollPay, format:'num',
+        info:'Enrolled farmers who have NOT yet made a payment. Represents pipeline leakage at the enrollment stage.' },
+      { icon:'⬇️', label:'Payment Drop-offs',       value:Utils.fmtNum(dropPayDeliv),     rawValue:dropPayDeliv,  format:'num',
+        info:'Farmers who paid but have NOT yet received delivery. Represents fulfillment pipeline backlog.' },
+      { icon:'⏱️', label:'Avg Delivery Time',       value:avgDelivDays>0?`${avgDelivDays.toFixed(0)}d`:'—', rawValue:avgDelivDays,
+        info:'Average days from enrollment to package delivery. Key operational efficiency indicator.' }
+    ]);
+
+    this._renderFunnelStages(enrolled, paid, delivered, dropEnrollPay, dropPayDeliv);
+    this._zoneConversion(f, p, d);
+    this._deliveryConversion(p, d);
+    this._velocityChart(f, p, d);
+    this._packageConversion(f, d);
+    this._renderInsights({ enrolled, paid, delivered, enrollToPayRate, payToDelivRate, enrollToDelivRate, dropEnrollPay, dropPayDeliv, avgDelivDays });
+  },
+
+  _renderFunnelStages(enrolled, paid, delivered, dropEnrollPay, dropPayDeliv) {
+    const el = document.getElementById('pipe-funnel-stages');
+    if (!el) return;
+    const stages = [
+      { icon:'👥', label:'Enrolled Farmers',   count:enrolled,  pct:100,                                      color:'#1B6B2B' },
+      { icon:'💳', label:'Made Payment',       count:paid,      pct:enrolled>0?(paid/enrolled*100):0,          color:'#2E8B4A' },
+      { icon:'🚚', label:'Package Delivered',  count:delivered, pct:enrolled>0?(delivered/enrolled*100):0,     color:'#52c974' }
+    ];
+    el.innerHTML = stages.map((s,i) => {
+      const dropOff = i===1 ? dropEnrollPay : i===2 ? dropPayDeliv : 0;
+      const dropPct  = i>0 ? (enrolled>0?(dropOff/enrolled*100):0).toFixed(1) : null;
+      const arrow = i < stages.length-1 ? `<div class="funnel-arrow">↓ <span style="color:var(--danger);font-size:12px;">${dropOff>0?`-${Utils.fmtNum(dropOff)} farmers (${dropPct}% drop-off)`:''}</span></div>` : '';
+      return `
+        <div class="funnel-stage" style="--fill:${s.pct.toFixed(0)}%">
+          <div class="funnel-stage-icon">${s.icon}</div>
+          <div class="funnel-stage-label">${s.label}</div>
+          <div style="display:flex;align-items:baseline;gap:4px">
+            <div class="funnel-stage-count" style="color:${s.color}">${Utils.fmtNum(s.count)}</div>
+            <div class="funnel-stage-pct">${s.pct.toFixed(1)}%</div>
+          </div>
+        </div>
+        ${arrow}`;
+    }).join('');
+  },
+
+  _zoneConversion(f, p, d) {
+    const zones = Utils.unique(f,'Zone').filter(z=>z&&z!=='Unknown').sort();
+    const pZones = p.map(r=>r['Zone']||'Unknown');
+    const enrollRate = zones.map(z => {
+      const enrolled = f.filter(r=>r['Zone']===z).length;
+      const paidZ    = p.filter(r=>r['Zone']===z).length;
+      return enrolled > 0 ? parseFloat((paidZ/enrolled*100).toFixed(1)) : 0;
+    });
+    ChartEngine.barChart('pipe-zone-conversion', zones, [{ name:'Enroll→Pay Rate %', data:enrollRate, color:'#2E8B4A' }],
+      { yAxis:{ axisLabel:{formatter:v=>v+'%'} } }
+    );
+  },
+
+  _deliveryConversion(p, d) {
+    const zones = Utils.unique([...p,...d],'Zone').filter(z=>z&&z!=='Unknown').sort();
+    const rate = zones.map(z => {
+      const paidZ = p.filter(r=>r['Zone']===z).length;
+      const delivZ = d.filter(r=>r['Zone']===z).length;
+      return paidZ > 0 ? parseFloat((delivZ/paidZ*100).toFixed(1)) : 0;
+    });
+    ChartEngine.barChart('pipe-delivery-conversion', zones, [{ name:'Pay→Deliver Rate %', data:rate, color:'#52c974' }],
+      { yAxis:{ axisLabel:{formatter:v=>v+'%'} } }
+    );
+  },
+
+  _velocityChart(f, p, d) {
+    const fByM = {}; f.forEach(r=>{ const m=Utils.monthKey(r['DATE CREATED']); fByM[m]=(fByM[m]||0)+1; });
+    const pByM = {}; p.forEach(r=>{ const m=Utils.monthKey(r['Date of Finishing']); pByM[m]=(pByM[m]||0)+1; });
+    const dByM = {}; d.forEach(r=>{ const m=Utils.monthKey(r['Delivery Date']); dByM[m]=(dByM[m]||0)+1; });
+    const months = [...new Set([...Object.keys(fByM),...Object.keys(pByM),...Object.keys(dByM)])].filter(m=>m!=='Unknown').sort();
+    ChartEngine.lineChart('pipe-velocity', months.map(Utils.monthLabel), [
+      { name:'Enrolled',  data:months.map(m=>fByM[m]||0), extra:{} },
+      { name:'Payments',  data:months.map(m=>pByM[m]||0), extra:{} },
+      { name:'Delivered', data:months.map(m=>dByM[m]||0), extra:{} }
+    ]);
+  },
+
+  _packageConversion(f, d) {
+    const allPkgs = [...Utils.unique(f,'PACKAGE'), ...Utils.unique(d,'Package Delivered')].filter(p=>p&&p!=='Unknown');
+    const pkgs = [...new Set(allPkgs)].slice(0,10);
+    const enrolled  = pkgs.map(pkg => f.filter(r=>r['PACKAGE']===pkg).length);
+    const delivered = pkgs.map(pkg => d.filter(r=>r['Package Delivered']===pkg).length);
+    ChartEngine.barChart('pipe-package-conversion', pkgs, [
+      { name:'Enrolled',  data:enrolled,  color:'#1B6B2B' },
+      { name:'Delivered', data:delivered, color:'#c8e63a' }
+    ]);
+  },
+
+  _renderInsights({ enrolled, paid, delivered, enrollToPayRate, payToDelivRate, enrollToDelivRate, dropEnrollPay, dropPayDeliv, avgDelivDays }) {
+    const el = document.getElementById('pipe-insights');
+    if (!el) return;
+    const insights = [
+      { icon:enrollToPayRate>=70?'✅':'⚠️', type:enrollToPayRate>=70?'green':'yellow',
+        title:`${enrollToPayRate.toFixed(1)}% Enrollment→Payment Conversion`,
+        text: enrollToPayRate>=70 ? 'Strong conversion from enrollment to first payment. VANOs are effectively mobilizing farmers to pay.'
+          : `${Utils.fmtNum(dropEnrollPay)} enrolled farmers have not yet made a payment. Target these with VANO follow-up calls.` },
+      { icon:payToDelivRate>=80?'✅':'⚠️', type:payToDelivRate>=80?'green':'yellow',
+        title:`${payToDelivRate.toFixed(1)}% Payment→Delivery Conversion`,
+        text: payToDelivRate>=80 ? 'Delivery fulfillment is efficient. Payments are converting to deliveries at a high rate.'
+          : `${Utils.fmtNum(dropPayDeliv)} farmers have paid but not received delivery. Investigate logistics or stock constraints.` },
+      { icon:'📊', type:'blue',
+        title:`${enrollToDelivRate.toFixed(1)}% End-to-End Pipeline Completion`,
+        text:`Of ${Utils.fmtNum(enrolled)} enrolled farmers, ${Utils.fmtNum(delivered)} have completed the full journey to package delivery.` }
+    ];
+    el.innerHTML = insights.map(i=>`<div class="insight-card"><div class="insight-icon ${i.type}">${i.icon}</div><div><div class="insight-title">${i.title}</div><div class="insight-text">${i.text}</div></div></div>`).join('');
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   AI INSIGHTS ENGINE  (Phase 6)
+═══════════════════════════════════════════════════════════ */
+const AIEngine = {
+  render() {
+    const f = AppState.filtered.farmers;
+    const p = AppState.filtered.payments;
+    const d = AppState.filtered.delivery;
+
+    /* ── Core metrics ── */
+    const enrolled      = f.length;
+    const paid          = p.length;
+    const delivered     = d.length;
+    const totalRevenue  = Utils.sumBy(p,'Actual Paid (TZS)');
+    const totalPkgCost  = Utils.sumBy(p,'Package Cost (TZS)');
+    const collectionRate= totalPkgCost>0?(totalRevenue/totalPkgCost)*100:0;
+    const female        = f.filter(r=>r['GENDER']==='Female').length;
+    const femaleRatio   = enrolled>0?(female/enrolled)*100:0;
+    const inGroup       = f.filter(r=>{ const v=(r['BELONGS IN A GROUP?']||'').toLowerCase(); return v==='yes'||v==='true'||v==='1'; }).length;
+    const groupRate     = enrolled>0?(inGroup/enrolled)*100:0;
+    const avgDelivDays  = Utils.avgBy(d,'Enrollment to delivery Days');
+    const avgNSP        = Utils.avgBy(d,'NSP Score');
+    const villages      = Utils.unique(f,'Village').length;
+    const zones         = Utils.unique(f,'Zone').length;
+    const convRate      = enrolled>0?(delivered/enrolled)*100:0;
+    const enrollToPayRate = enrolled>0?(paid/enrolled)*100:0;
+    const outstanding   = Math.max(0,totalPkgCost-totalRevenue);
+
+    // Growth rate
+    const byMonth = {};
+    f.forEach(r=>{ const m=Utils.monthKey(r['DATE CREATED']); byMonth[m]=(byMonth[m]||0)+1; });
+    const months = Object.keys(byMonth).sort();
+    let growthRate = 0;
+    if (months.length>=2) {
+      const c=byMonth[months[months.length-1]], pv=byMonth[months[months.length-2]];
+      growthRate = pv>0?((c-pv)/pv)*100:0;
+    }
+
+    /* ── Composite health scores ── */
+    const enrollmentScore  = Math.min(100, (growthRate>0?70:40) + (enrolled>100?30:enrolled/10));
+    const collectionScore  = Math.min(100, collectionRate);
+    const deliveryScore    = Math.min(100, convRate);
+    const genderScore      = Math.min(100, femaleRatio*2);
+    const satisfactionScore= avgNSP>0 ? Math.min(100,avgNSP) : 50;
+    const overallHealth    = (enrollmentScore+collectionScore+deliveryScore+genderScore+satisfactionScore)/5;
+
+    /* ── Executive Summary ── */
+    const topZone = (() => { const c=Utils.countBy(f,'Zone'); const e=Object.entries(c).sort((a,b)=>b[1]-a[1]); return e.length?e[0][0]:'—'; })();
+    const summaryEl = document.getElementById('ai-exec-text');
+    if (summaryEl) {
+      summaryEl.textContent = `The HERVeg.05 program has enrolled ${Utils.fmtNum(enrolled)} farmers across ${zones} zones and ${villages} villages. Revenue collection stands at ${Utils.fmtPct(collectionRate)} (${Utils.fmtCurrency(totalRevenue)} collected), with ${Utils.fmtNum(delivered)} farmers having received package delivery — a ${Utils.fmtPct(convRate)} end-to-end conversion rate. Female participation is ${Utils.fmtPct(femaleRatio)}, and the average delivery time is ${avgDelivDays>0?avgDelivDays.toFixed(0)+'days':'not yet available'}. The strongest operational zone is ${topZone}. Overall program health score: ${overallHealth.toFixed(0)}/100.`;
+    }
+
+    /* ── Trends ── */
+    const trendsEl = document.getElementById('ai-trends');
+    if (trendsEl) {
+      const trends = [
+        { type: growthRate>5?'positive':growthRate>0?'info':'warning',
+          text:`<strong>Enrollment ${growthRate>=0?'Growth':'Decline'}:</strong> Month-over-month enrollment change of ${growthRate>0?'+':''}${growthRate.toFixed(1)}%. ${growthRate>5?'Strong intake momentum.':growthRate>0?'Modest growth — review VANO targets.':'Declining intake needs immediate field response.'}` },
+        { type: collectionRate>=80?'positive':collectionRate>=60?'info':'warning',
+          text:`<strong>Revenue Collection:</strong> ${Utils.fmtPct(collectionRate)} collection rate with ${Utils.fmtCurrency(outstanding)} outstanding. ${collectionRate>=80?'Excellent payment discipline.':collectionRate>=60?'Follow up on partial payers.':'Urgent collections intervention needed.'}` },
+        { type: convRate>=70?'positive':'info',
+          text:`<strong>Pipeline Conversion:</strong> ${Utils.fmtPct(enrollToPayRate)} enrollment-to-payment, ${Utils.fmtPct(convRate)} end-to-end. ${convRate>=70?'Pipeline flowing strongly.':'Stage-by-stage drop-off analysis recommended.'}` },
+        { type: femaleRatio>=50?'positive':'warning',
+          text:`<strong>Gender Inclusion:</strong> ${Utils.fmtPct(femaleRatio)} female participation. ${femaleRatio>=50?'Gender parity achieved.':'Below 50% parity — targeted women outreach needed.'}` },
+        avgNSP>0 ? { type:avgNSP>=70?'positive':'info',
+          text:`<strong>Farmer Satisfaction:</strong> Average NSP Score of ${avgNSP.toFixed(1)}. ${avgNSP>=70?'Farmers are highly satisfied with the program.':'Moderate satisfaction — investigate common delivery concerns.'}` } : null
+      ].filter(Boolean);
+      trendsEl.innerHTML = trends.map(t=>`<div class="ai-finding ${t.type}">${t.text}</div>`).join('');
+    }
+
+    /* ── Risk Alerts ── */
+    const risksEl = document.getElementById('ai-risks');
+    if (risksEl) {
+      const risks = [];
+      if (outstanding > totalRevenue * 0.3) risks.push({ type:'critical', text:`<strong>High Outstanding Balance:</strong> ${Utils.fmtCurrency(outstanding)} (${Utils.fmtPct(outstanding/(totalPkgCost||1)*100)} of expected revenue) remains unpaid. Prioritize collection follow-ups in low-payment zones.` });
+      if (femaleRatio < 40) risks.push({ type:'warning', text:`<strong>Gender Gap Alert:</strong> Only ${Utils.fmtPct(femaleRatio)} female participation. This may signal access or cultural barriers preventing women from joining. Investigate with VANOs.` });
+      if (avgDelivDays > 60) risks.push({ type:'critical', text:`<strong>Slow Delivery Operations:</strong> Average ${avgDelivDays.toFixed(0)}-day enrollment-to-delivery time exceeds the 60-day threshold. Investigate logistics and supply chain bottlenecks.` });
+      if (enrollToPayRate < 60) risks.push({ type:'warning', text:`<strong>Low Payment Conversion:</strong> Only ${Utils.fmtPct(enrollToPayRate)} of enrolled farmers have made a payment. ${Utils.fmtNum(enrolled-paid)} enrolled farmers need payment follow-up.` });
+      if (convRate < 50) risks.push({ type:'warning', text:`<strong>Pipeline Leakage:</strong> Less than half of enrolled farmers have received delivery (${Utils.fmtPct(convRate)}). Review drop-off points in the enrollment-to-delivery pipeline.` });
+      const zoneGap = (() => { const c=Utils.countBy(f,'Zone'); const v=Object.values(c); if(v.length<2) return 0; return Math.max(...v)-Math.min(...v); })();
+      if (zoneGap > 50) risks.push({ type:'info', text:`<strong>Zone Imbalance Detected:</strong> Enrollment gap of ${zoneGap} farmers between highest and lowest zones. Consider reallocating VANO resources to underperforming zones.` });
+      if (!risks.length) risks.push({ type:'positive', text:'<strong>No Critical Alerts:</strong> All monitored KPIs are within acceptable ranges. Continue monitoring for emerging trends.' });
+      risksEl.innerHTML = risks.map(r=>`<div class="ai-finding ${r.type}">${r.text}</div>`).join('');
+    }
+
+    /* ── Health Radar ── */
+    this._healthRadar(enrollmentScore, collectionScore, deliveryScore, genderScore, satisfactionScore, groupRate);
+
+    /* ── Anomaly Chart ── */
+    this._anomalyChart({ collectionRate, femaleRatio, convRate, groupRate, avgNSP: avgNSP||0 });
+
+    /* ── Opportunity Scatter ── */
+    this._opportunityMatrix(f, p);
+
+    /* ── Trend Comparison ── */
+    this._trendComparison(f, p, d);
+
+    /* ── Recommendations ── */
+    this._renderRecommendations({ enrolled, paid, delivered, collectionRate, femaleRatio, convRate, avgDelivDays, avgNSP, groupRate, villages, zones, outstanding, enrollToPayRate, growthRate });
+
+    /* ── Opportunities ── */
+    this._renderOpportunities(f, p, d, { zones, villages, femaleRatio, collectionRate, convRate });
+  },
+
+  _healthRadar(enrollment, collection, delivery, gender, satisfaction, social) {
+    const chart = ChartEngine.init('ai-health-radar');
+    if (!chart) return;
+    chart.setOption({
+      ...ChartEngine.baseOption(),
+      legend:{ bottom:0, textStyle:{color:'#6b7280',fontSize:11} },
+      radar:{
+        indicator:[
+          { name:'Enrollment', max:100 },
+          { name:'Collection', max:100 },
+          { name:'Delivery', max:100 },
+          { name:'Gender Inclusion', max:100 },
+          { name:'Satisfaction', max:100 },
+          { name:'Social Cohesion', max:100 }
+        ],
+        splitArea:{ areaStyle:{ color:['rgba(46,139,74,0.05)','rgba(46,139,74,0.02)'] } },
+        splitLine:{ lineStyle:{ color:'#e5e7eb' } },
+        axisName:{ color:'#6b7280', fontSize:11 }
+      },
+      series:[{
+        type:'radar', name:'Program Health',
+        data:[{
+          value:[enrollment,collection,delivery,gender,satisfaction,social],
+          areaStyle:{ color:'rgba(46,139,74,0.2)' },
+          lineStyle:{ color:'#2E8B4A', width:2 },
+          itemStyle:{ color:'#2E8B4A' }
+        }]
+      }]
+    });
+  },
+
+  _anomalyChart({ collectionRate, femaleRatio, convRate, groupRate, avgNSP }) {
+    const targets = { 'Collection Rate':80, 'Female Ratio':50, 'Conversion Rate':70, 'Group Rate':60, 'NSP Score':70 };
+    const actuals = { 'Collection Rate':collectionRate, 'Female Ratio':femaleRatio, 'Conversion Rate':convRate, 'Group Rate':groupRate, 'NSP Score':avgNSP };
+    const labels  = Object.keys(targets);
+    const gaps    = labels.map(k => parseFloat((actuals[k]-targets[k]).toFixed(1)));
+    const chart   = ChartEngine.init('ai-anomaly');
+    if (!chart) return;
+    chart.setOption({
+      ...ChartEngine.baseOption(),
+      grid:{ top:20, right:30, bottom:60, left:20, containLabel:true },
+      xAxis:{ type:'category', data:labels, axisLabel:{color:'#9ca3af',fontSize:10,rotate:20}, axisTick:{show:false} },
+      yAxis:{ type:'value', axisLabel:{color:'#9ca3af',fontSize:11,formatter:v=>(v>0?'+':'')+v+'%'}, splitLine:{lineStyle:{color:'#f3f4f6'}},
+        markLine:{ data:[{ yAxis:0, lineStyle:{ color:'#9ca3af', type:'dashed' } }] } },
+      series:[{ type:'bar', data:gaps, barMaxWidth:36,
+        itemStyle:{ color:p=>gaps[p.dataIndex]>=0?'#2E8B4A':'#e53e3e', borderRadius:[4,4,0,0] },
+        label:{ show:true, position:'top', color:'#6b7280', fontSize:11, formatter:v=>(v.value>0?'+':'')+v.value+'%' }
+      }],
+      tooltip:{ ...ChartEngine.baseOption().tooltip, trigger:'axis', formatter:p=>`${p[0].name}<br/>vs Target: ${p[0].value>0?'+':''}${p[0].value}%` }
+    });
+  },
+
+  _opportunityMatrix(f, p) {
+    const zones = Utils.unique(f,'Zone').filter(z=>z&&z!=='Unknown');
+    const data  = zones.map(z => {
+      const enrolled = f.filter(r=>r['Zone']===z).length;
+      const paidZ    = p.filter(r=>r['Zone']===z);
+      const revenue  = Utils.sumBy(paidZ,'Actual Paid (TZS)');
+      const cost     = Utils.sumBy(paidZ,'Package Cost (TZS)');
+      const rate     = cost>0?(revenue/cost)*100:0;
+      return { name:z, value:[enrolled, parseFloat(rate.toFixed(1)), enrolled], label:{ show:enrolled>3, formatter:z, color:'#6b7280', fontSize:10 } };
+    });
+    const chart = ChartEngine.init('ai-opportunity');
+    if (!chart) return;
+    chart.setOption({
+      ...ChartEngine.baseOption(),
+      tooltip:{ ...ChartEngine.baseOption().tooltip, trigger:'item', formatter:p=>`${p.name}<br/>Enrolled: ${p.value[0]}<br/>Collection Rate: ${p.value[1]}%` },
+      xAxis:{ type:'value', name:'Enrolled Farmers', nameTextStyle:{color:'#9ca3af',fontSize:11}, axisLabel:{color:'#9ca3af',fontSize:11} },
+      yAxis:{ type:'value', name:'Collection Rate %', nameTextStyle:{color:'#9ca3af',fontSize:11}, axisLabel:{color:'#9ca3af',fontSize:11,formatter:v=>v+'%'} },
+      series:[{ type:'scatter', data:data.map(d=>({ value:d.value, name:d.name, label:d.label })),
+        symbolSize: p => Math.max(Math.sqrt(p[2])*4, 12),
+        itemStyle:{ color: p => { const rate=p.value[1]; return rate>=80?'#1B6B2B':rate>=60?'#c8e63a':'#e53e3e'; }, opacity:0.8 },
+        label:{ show:true, formatter:p=>p.name, position:'right', color:'#6b7280', fontSize:10 }
+      }]
+    });
+  },
+
+  _trendComparison(f, p, d) {
+    const fByM={}, pByM={}, dByM={};
+    f.forEach(r=>{ const m=Utils.monthKey(r['DATE CREATED']); fByM[m]=(fByM[m]||0)+1; });
+    p.forEach(r=>{ const m=Utils.monthKey(r['Date of Finishing']); pByM[m]=(pByM[m]||0)+1; });
+    d.forEach(r=>{ const m=Utils.monthKey(r['Delivery Date']); dByM[m]=(dByM[m]||0)+1; });
+    const months = [...new Set([...Object.keys(fByM),...Object.keys(pByM),...Object.keys(dByM)])].filter(m=>m!=='Unknown').sort();
+    ChartEngine.lineChart('ai-trend-comparison', months.map(Utils.monthLabel), [
+      { name:'Enrolled',  data:months.map(m=>fByM[m]||0) },
+      { name:'Payments',  data:months.map(m=>pByM[m]||0) },
+      { name:'Delivered', data:months.map(m=>dByM[m]||0) }
+    ]);
+  },
+
+  _renderRecommendations({ enrolled, paid, delivered, collectionRate, femaleRatio, convRate, avgDelivDays, avgNSP, groupRate, villages, zones, outstanding, enrollToPayRate, growthRate }) {
+    const el = document.getElementById('ai-recommendations');
+    if (!el) return;
+    const recs = [
+      collectionRate < 80 ? {
+        priority:'high', icon:'💰',
+        text:`<strong>Accelerate Collections:</strong> ${Utils.fmtPct(collectionRate)} collection rate leaves ${Utils.fmtCurrency(outstanding)} outstanding. Deploy targeted VANO follow-up in low-collection zones within the next 2 weeks.`
+      } : null,
+      femaleRatio < 50 ? {
+        priority:'high', icon:'♀️',
+        text:`<strong>Women Inclusion Drive:</strong> Female participation at ${Utils.fmtPct(femaleRatio)} is below 50% parity. Launch a women-only enrollment campaign in zones with the lowest female ratios.`
+      } : null,
+      avgDelivDays > 45 ? {
+        priority:'medium', icon:'⚡',
+        text:`<strong>Streamline Delivery Operations:</strong> ${avgDelivDays.toFixed(0)}-day average enrollment-to-delivery is above the 45-day target. Review logistics routes and stock positioning per zone.`
+      } : null,
+      enrollToPayRate < 70 ? {
+        priority:'high', icon:'📞',
+        text:`<strong>Payment Mobilization Campaign:</strong> ${Utils.fmtNum(enrolled-paid)} enrolled farmers have not yet paid. Assign VANOs specific follow-up targets per village with a 2-week deadline.`
+      } : null,
+      groupRate < 60 ? {
+        priority:'medium', icon:'🤝',
+        text:`<strong>Community Group Expansion:</strong> Only ${Utils.fmtPct(groupRate)} of farmers are in groups. Organize farmer group formation sessions in villages with low group participation to improve social support networks.`
+      } : null,
+      growthRate <= 0 ? {
+        priority:'medium', icon:'📈',
+        text:`<strong>Enrollment Recovery:</strong> Month-over-month enrollment is flat or declining. Review VANO enrollment targets and run referral incentive programs to restart intake momentum.`
+      } : null,
+      avgNSP > 0 && avgNSP < 70 ? {
+        priority:'medium', icon:'⭐',
+        text:`<strong>Improve Farmer Experience:</strong> Average NSP score of ${avgNSP.toFixed(1)} is below the 70-point target. Conduct quick satisfaction surveys with recently delivered farmers to identify top complaints.`
+      } : null,
+      {
+        priority:'low', icon:'🗺️',
+        text:`<strong>Geographic Expansion:</strong> Program currently covers ${zones} zones and ${villages} villages. Identify adjacent villages to enrolled communities for organic expansion with minimal additional cost.`
+      }
+    ].filter(Boolean).slice(0,6);
+
+    el.innerHTML = recs.map(r=>`
+      <div class="rec-card">
+        <div>${r.icon}</div>
+        <div style="flex:1"><span class="rec-priority ${r.priority}">${r.priority}</span><div class="rec-text" style="margin-top:6px">${r.text}</div></div>
+      </div>`).join('');
+  },
+
+  _renderOpportunities(f, p, d, { zones, villages, femaleRatio, collectionRate, convRate }) {
+    const el = document.getElementById('ai-opportunities');
+    if (!el) return;
+    const topVillage = (() => { const c=Utils.countBy(f,'Village'); const e=Object.entries(c).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]); return e.length?e[0]:['—',0]; })();
+    const topAgent   = (() => { const c={}; p.forEach(r=>{ const a=r['Village Agent']||'Unknown'; c[a]=(c[a]||0)+Utils.parseNum(r['Actual Paid (TZS)']); }); const e=Object.entries(c).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]); return e.length?e[0]:['—',0]; })();
+    const opp = [
+      { icon:'🚀', priority:'high',
+        text:`<strong>Replicate Top Village Model:</strong> ${topVillage[0]} has the highest enrollment (${topVillage[1]} farmers). Study and replicate its outreach model — group dynamics, VANO approach, and community engagement — in 5 neighboring villages.` },
+      { icon:'💎', priority:'high',
+        text:`<strong>Agent Mentorship Program:</strong> ${topAgent[0]} has collected ${Utils.fmtCurrency(topAgent[1])}. Pair top agents with underperformers in a mentorship program to transfer best practices across the field team.` },
+      { icon:'📱', priority:'medium',
+        text:`<strong>Digital Payment Integration:</strong> Enabling mobile money payment options could accelerate the ${Utils.fmtPct(100-collectionRate)} outstanding collection rate and reduce VANO travel costs for cash collection.` },
+      { icon:'🌱', priority:'medium',
+        text:`<strong>Seasonal Enrollment Windows:</strong> Analyze enrollment velocity data to identify seasonal peaks and plan concentrated enrollment drives during high-activity months.` },
+      { icon:'👥', priority:'low',
+        text:`<strong>Group-Based Lending Programs:</strong> ${Utils.fmtPct(100-convRate)} of enrolled farmers haven't completed the delivery pipeline. Group liability models could improve payment compliance and delivery completion rates.` },
+      { icon:'📊', priority:'low',
+        text:`<strong>Data Quality Investment:</strong> Improving GPS coordinate capture rates and standardizing zone/village names will unlock more precise geographic analytics and better resource allocation decisions.` }
+    ];
+    el.innerHTML = opp.map(o=>`
+      <div class="rec-card">
+        <div>${o.icon}</div>
+        <div style="flex:1"><span class="rec-priority ${o.priority}">${o.priority}</span><div class="rec-text" style="margin-top:6px">${o.text}</div></div>
+      </div>`).join('');
+  }
+};
+
 // Start on load
 document.addEventListener('DOMContentLoaded', init);
+</script>
+<!-- MOBILE BOTTOM NAV -->
+<nav id="mobile-nav" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:1000;background:#fff;border-top:1px solid #e5e7eb;padding:6px 0;box-shadow:0 -4px 12px rgba(0,0,0,0.06);">
+  <div style="display:flex;justify-content:space-around;align-items:center;">
+    <button onclick="switchTab('overview')"  data-mob="overview"  style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:none;cursor:pointer;padding:4px 8px;font-family:Inter,sans-serif;"><span style="font-size:20px">📊</span><span style="font-size:9px;color:#6b7280;font-weight:500">Overview</span></button>
+    <button onclick="switchTab('enrollment')" data-mob="enrollment" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:none;cursor:pointer;padding:4px 8px;font-family:Inter,sans-serif;"><span style="font-size:20px">👥</span><span style="font-size:9px;color:#6b7280;font-weight:500">Enroll</span></button>
+    <button onclick="switchTab('payment')"   data-mob="payment"   style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:none;cursor:pointer;padding:4px 8px;font-family:Inter,sans-serif;"><span style="font-size:20px">💳</span><span style="font-size:9px;color:#6b7280;font-weight:500">Payments</span></button>
+    <button onclick="switchTab('delivery')"  data-mob="delivery"  style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:none;cursor:pointer;padding:4px 8px;font-family:Inter,sans-serif;"><span style="font-size:20px">🚚</span><span style="font-size:9px;color:#6b7280;font-weight:500">Delivery</span></button>
+    <button onclick="switchTab('geo')"       data-mob="geo"       style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:none;cursor:pointer;padding:4px 8px;font-family:Inter,sans-serif;"><span style="font-size:20px">🗺️</span><span style="font-size:9px;color:#6b7280;font-weight:500">Map</span></button>
+    <button onclick="switchTab('ai')"        data-mob="ai"        style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:none;cursor:pointer;padding:4px 8px;font-family:Inter,sans-serif;"><span style="font-size:20px">🤖</span><span style="font-size:9px;color:#6b7280;font-weight:500">AI</span></button>
+  </div>
+</nav>
+
+<script>
+/* ── Phase 7: Final polish & performance ── */
+
+// Mobile nav visibility
+function updateResponsive() {
+  const mob = document.getElementById('mobile-nav');
+  if (window.innerWidth <= 768) {
+    mob.style.display = 'block';
+    document.getElementById('main').style.paddingBottom = '72px';
+  } else {
+    mob.style.display = 'none';
+    document.getElementById('main').style.paddingBottom = '24px';
+  }
+}
+window.addEventListener('resize', updateResponsive);
+updateResponsive();
+
+// Sync mobile nav active state
+const _origSwitch = switchTab;
+window.switchTab = function(id) {
+  _origSwitch(id);
+  document.querySelectorAll('[data-mob]').forEach(b => {
+    b.style.opacity = b.dataset.mob === id ? '1' : '0.5';
+    const span = b.querySelector('span:last-child');
+    if (span) span.style.color = b.dataset.mob === id ? 'var(--green-800)' : '#6b7280';
+  });
+};
+
+// Preload all tab engines after initial render (background, non-blocking)
+function preloadBackgroundTabs() {
+  const tabs = ['enrollment','payment','delivery','pipeline','ai'];
+  tabs.forEach((tab, i) => {
+    setTimeout(() => {
+      try {
+        if (tab==='enrollment')  EnrollmentEngine.render();
+        if (tab==='payment')     PaymentEngine.render();
+        if (tab==='delivery')    DeliveryEngine.render();
+        if (tab==='pipeline')    PipelineEngine.render();
+      } catch(e) { /* silent */ }
+    }, 800 + i * 300);
+  });
+}
+
+// Override init to call preload after initial render
+const _origInit = init;
+window.init = async function() {
+  await _origInit();
+  setTimeout(preloadBackgroundTabs, 1200);
+};
+
+// Keyboard shortcut: numbers 1-7 switch tabs
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const map = { '1':'overview','2':'enrollment','3':'payment','4':'delivery','5':'geo','6':'pipeline','7':'ai' };
+  if (map[e.key]) switchTab(map[e.key]);
+  if (e.key==='r' && (e.ctrlKey||e.metaKey)) { e.preventDefault(); forceRefresh(); }
+});
+
+// Chart resize on window resize (debounced)
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    Object.values(AppState.charts).forEach(c => { try { c.resize(); } catch(e){} });
+    if (GeoEngine._map) GeoEngine._map.invalidateSize();
+  }, 200);
+});
+
+// GSAP microinteraction: KPI card hover depth
+document.addEventListener('mouseover', e => {
+  const card = e.target.closest('.kpi-card');
+  if (card && window.gsap) gsap.to(card, { y:-4, boxShadow:'0 16px 48px rgba(0,0,0,0.12)', duration:0.2, ease:'power2.out' });
+});
+document.addEventListener('mouseout', e => {
+  const card = e.target.closest('.kpi-card');
+  if (card && window.gsap) gsap.to(card, { y:0, boxShadow:'0 4px 16px rgba(0,0,0,0.08)', duration:0.2, ease:'power2.out' });
+});
 </script>
 </body>
 </html>
