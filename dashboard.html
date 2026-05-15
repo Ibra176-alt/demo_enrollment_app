@@ -458,13 +458,44 @@ body::before {
   backdrop-filter: var(--glass-blur-light);
   -webkit-backdrop-filter: var(--glass-blur-light);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 20px 20px 20px 22px; /* extra left padding for gradient border */
   box-shadow: var(--glass-shadow);
   border: var(--glass-border);
   display: flex; gap: 14px; align-items: flex-start;
   transition: var(--transition);
+  position: relative; overflow: hidden;
 }
-.insight-card:hover { background: var(--glass-bg-strong); box-shadow: var(--glass-shadow-hover); }
+/* Gradient left border via ::before */
+.insight-card::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3.5px;
+  background: linear-gradient(to bottom, var(--green-600), var(--yellow-green));
+  border-radius: 3px 0 0 3px;
+  transition: width 0.25s ease, opacity 0.25s ease;
+  opacity: 0.75;
+}
+/* Faint dot-grid pattern revealed on hover via ::after */
+.insight-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  opacity: 0;
+  background-image: radial-gradient(circle, rgba(46,139,74,0.12) 1px, transparent 1px);
+  background-size: 16px 16px;
+  border-radius: inherit;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.insight-card:hover {
+  background: var(--glass-bg-strong);
+  box-shadow: var(--glass-shadow-hover);
+}
+.insight-card:hover::before { width: 5px; opacity: 1; }
+.insight-card:hover::after  { opacity: 1; }
+/* Type-specific border colours */
+.insight-card:has(.insight-icon.yellow)::before { background: linear-gradient(to bottom,#f59e0b,#fde68a); }
+.insight-card:has(.insight-icon.red)::before    { background: linear-gradient(to bottom,#e53e3e,#f87171); }
+.insight-card:has(.insight-icon.blue)::before   { background: linear-gradient(to bottom,#3b82f6,#93c5fd); }
 .insight-icon {
   width: 38px; height: 38px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
@@ -589,10 +620,21 @@ body::before {
 }
 .map-toggle.active { background: var(--green-800); color: var(--white); border-color: var(--green-800); }
 
-/* ─── PIPELINE ───────────────────────────────────────────── */
+/* ─── PIPELINE TIMELINE ──────────────────────────────────── */
+.pipeline-timeline {
+  position: relative;
+  padding-left: 56px; /* room for the timeline rail */
+}
+/* Vertical rail line */
+.pipeline-timeline::before {
+  content: '';
+  position: absolute; left: 20px; top: 24px; bottom: 24px; width: 2px;
+  background: linear-gradient(to bottom, var(--green-600), var(--yellow-green), rgba(200,230,58,0.2));
+  border-radius: 2px;
+}
 .funnel-stage {
   display: flex; align-items: center; gap: 16px;
-  padding: 14px 20px; margin-bottom: 8px;
+  padding: 16px 20px; margin-bottom: 0;
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur-light);
   -webkit-backdrop-filter: var(--glass-blur-light);
@@ -600,17 +642,60 @@ body::before {
   border: var(--glass-border);
   box-shadow: var(--glass-shadow);
   position: relative; overflow: hidden;
+  transition: var(--transition);
 }
+.funnel-stage:hover { background: var(--glass-bg-strong); box-shadow: var(--glass-shadow-hover); }
+/* Filled progress bar across bottom */
 .funnel-stage::before {
-  content:''; position:absolute; left:0; top:0; bottom:0;
-  background: linear-gradient(90deg, var(--green-600), var(--yellow-green));
-  opacity: 0.08; width: var(--fill, 100%);
+  content:''; position:absolute; left:0; bottom:0; top:0;
+  background: linear-gradient(90deg, rgba(46,139,74,0.07), rgba(200,230,58,0.04));
+  width: var(--fill, 100%);
 }
-.funnel-stage-icon { font-size: 22px; width: 36px; text-align: center; flex-shrink: 0; }
+/* Step node dot — sits on the timeline rail */
+.funnel-step-node {
+  position: absolute;
+  left: -48px; /* back into the rail area */
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2.5px solid var(--green-600);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--green-800);
+  box-shadow: 0 0 0 4px rgba(46,139,74,0.12);
+  flex-shrink: 0;
+  z-index: 1;
+  transition: var(--transition);
+}
+.funnel-stage:hover .funnel-step-node {
+  background: var(--green-800); color: #fff;
+  box-shadow: 0 0 0 6px rgba(46,139,74,0.18);
+}
+.funnel-stage-icon { font-size: 20px; flex-shrink: 0; }
 .funnel-stage-label { font-size: 13px; font-weight: 600; color: var(--gray-700); flex: 1; }
 .funnel-stage-count { font-size: 22px; font-weight: 800; color: var(--gray-800); }
 .funnel-stage-pct { font-size: 12px; color: var(--gray-400); margin-left: 6px; }
-.funnel-arrow { text-align: center; color: var(--gray-300); font-size: 18px; margin: -4px 0; padding-left: 56px; }
+
+/* Drop-off connector between stages */
+.funnel-connector {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0 6px 0;
+  margin-left: 0; /* inside .pipeline-timeline so already offset */
+}
+.funnel-connector-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--gray-200), transparent);
+}
+.funnel-drop-label {
+  font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: var(--radius-full);
+  background: rgba(239,68,68,0.08); color: #dc2626;
+  border: 1px solid rgba(239,68,68,0.15);
+  white-space: nowrap;
+}
+.funnel-drop-label.none {
+  background: rgba(46,139,74,0.08); color: var(--green-700);
+  border-color: rgba(46,139,74,0.15);
+}
 .drop-off-bar {
   height: 6px; border-radius: var(--radius-full);
   background: var(--gray-100); margin: 4px 0 12px; overflow: hidden;
@@ -619,19 +704,67 @@ body::before {
 
 /* ─── AI INSIGHTS ────────────────────────────────────────── */
 .ai-header {
-  background: linear-gradient(135deg, var(--green-900), var(--green-700));
+  background: linear-gradient(135deg, var(--green-900) 0%, #143d1f 50%, var(--green-700) 100%);
   border-radius: var(--radius-xl); padding: 28px 32px;
-  margin-bottom: 24px; color: var(--white); position: relative; overflow: hidden;
+  margin-bottom: 24px; color: var(--white);
+  position: relative; overflow: hidden;
+  isolation: isolate; /* contain the blobs */
 }
+/* Animated blob 1 — yellow-green, top-right */
 .ai-header::before {
-  content:''; position:absolute; right:-40px; top:-40px;
-  width:200px; height:200px; border-radius:50%;
-  background: rgba(200,230,58,0.08);
+  content: '';
+  position: absolute;
+  width: 340px; height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center,
+    rgba(200,230,58,0.22) 0%,
+    rgba(200,230,58,0.06) 50%,
+    transparent 70%);
+  top: -80px; right: -60px;
+  animation: aiBlob1 7s ease-in-out infinite;
+  pointer-events: none; z-index: 0;
 }
+/* Animated blob 2 — teal-green, bottom-left */
 .ai-header::after {
-  content:''; position:absolute; right:60px; bottom:-60px;
-  width:140px; height:140px; border-radius:50%;
-  background: rgba(200,230,58,0.05);
+  content: '';
+  position: absolute;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center,
+    rgba(58,173,92,0.25) 0%,
+    rgba(58,173,92,0.07) 50%,
+    transparent 70%);
+  bottom: -80px; left: -40px;
+  animation: aiBlob2 9s ease-in-out infinite 1.5s;
+  pointer-events: none; z-index: 0;
+}
+/* Third blob via a child element we add below */
+.ai-blob3 {
+  position: absolute;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center,
+    rgba(255,255,255,0.06) 0%,
+    transparent 65%);
+  top: 20px; left: 42%;
+  animation: aiBlob3 11s ease-in-out infinite 3s;
+  pointer-events: none; z-index: 0;
+}
+/* All direct text children sit above blobs */
+.ai-header > * { position: relative; z-index: 1; }
+@keyframes aiBlob1 {
+  0%,100% { transform: translate(0,   0)   scale(1);    }
+  33%      { transform: translate(-30px, 20px) scale(1.12); }
+  66%      { transform: translate(20px, -20px) scale(0.92); }
+}
+@keyframes aiBlob2 {
+  0%,100% { transform: translate(0,   0)   scale(1);    }
+  40%      { transform: translate(40px, -30px) scale(1.15); }
+  70%      { transform: translate(-20px, 20px) scale(0.9);  }
+}
+@keyframes aiBlob3 {
+  0%,100% { transform: translate(0, 0)   scale(1);    }
+  50%      { transform: translate(30px, 40px) scale(1.2); }
 }
 .ai-badge {
   display: inline-flex; align-items: center; gap: 6px;
@@ -1510,6 +1643,7 @@ body::before {
   <!-- ══ AI INSIGHTS & RECOMMENDATIONS ════════════════════ -->
   <div class="tab-page" id="tab-ai">
     <div class="ai-header">
+      <div class="ai-blob3"></div>
       <div class="ai-badge">🤖 AI Analytics Engine</div>
       <div class="ai-title">Strategic Intelligence &amp; Recommendations</div>
       <div class="ai-subtitle">Auto-generated insights from live spreadsheet data — updated every refresh cycle</div>
@@ -1964,8 +2098,8 @@ const KPIEngine = {
     const el = document.getElementById(containerId);
     if (!el) return;
     el.innerHTML = cards.map(c => this.cardHTML(c)).join('');
-    // Animate counters
-    el.querySelectorAll('[data-counter]').forEach(el => this.animateCounter(el));
+    // Trigger counters only when each card scrolls into view
+    el.querySelectorAll('[data-counter]').forEach(counterEl => this.observeCounter(counterEl));
   },
 
   cardHTML(c) {
@@ -1987,24 +2121,47 @@ const KPIEngine = {
 
   _esc(s) { return String(s || '').replace(/'/g,"\\'").replace(/"/g,'&quot;').substring(0,200); },
 
+  observeCounter(el) {
+    // Re-use a single shared observer for performance
+    if (!KPIEngine._io) {
+      KPIEngine._io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          KPIEngine.animateCounter(entry.target);
+          KPIEngine._io.unobserve(entry.target); // fire once
+        });
+      }, { threshold: 0.25 });
+    }
+    // Mark as pending so re-renders reset correctly
+    if (el._counted) {
+      // Already rendered previously — animate immediately if already in view
+      const rect = el.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      if (inView) { KPIEngine.animateCounter(el); return; }
+    }
+    el._counted = true;
+    KPIEngine._io.observe(el);
+  },
+
   animateCounter(el) {
     const target = parseFloat(el.dataset.counter) || 0;
     const format = el.dataset.format;
     const prefix = el.dataset.prefix || '';
     const suffix = el.dataset.suffix || '';
     if (!target || isNaN(target)) return;
-    const start = performance.now();
-    const duration = 1200;
+    const duration = 1400;
     const fmt = (v) => {
       if (format === 'currency') return prefix + Utils.fmtCurrency(v,'').trim() + suffix;
       if (format === 'pct') return prefix + v.toFixed(1) + '%';
       if (format === 'dec') return prefix + v.toFixed(1) + suffix;
       return prefix + Utils.fmtNum(Math.round(v)) + suffix;
     };
+    const start = performance.now();
     const tick = (now) => {
-      const elapsed = now - start;
+      const elapsed  = now - start;
       const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
+      // Expo-out easing for snappy start, smooth finish
+      const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
       el.textContent = fmt(target * ease);
       if (progress < 1) requestAnimationFrame(tick);
     };
@@ -3512,25 +3669,35 @@ const PipelineEngine = {
     const el = document.getElementById('pipe-funnel-stages');
     if (!el) return;
     const stages = [
-      { icon:'👥', label:'Enrolled Farmers',   count:enrolled,  pct:100,                                      color:'#1B6B2B' },
-      { icon:'💳', label:'Made Payment',       count:paid,      pct:enrolled>0?(paid/enrolled*100):0,          color:'#2E8B4A' },
-      { icon:'🚚', label:'Package Delivered',  count:delivered, pct:enrolled>0?(delivered/enrolled*100):0,     color:'#52c974' }
+      { icon:'👥', label:'Enrolled Farmers',  count:enrolled,  pct:100,                              color:'#1B6B2B' },
+      { icon:'💳', label:'Made Payment',      count:paid,      pct:enrolled>0?(paid/enrolled*100):0,  color:'#2E8B4A' },
+      { icon:'🚚', label:'Package Delivered', count:delivered, pct:enrolled>0?(delivered/enrolled*100):0, color:'#52c974' }
     ];
-    el.innerHTML = stages.map((s,i) => {
-      const dropOff = i===1 ? dropEnrollPay : i===2 ? dropPayDeliv : 0;
-      const dropPct  = i>0 ? (enrolled>0?(dropOff/enrolled*100):0).toFixed(1) : null;
-      const arrow = i < stages.length-1 ? `<div class="funnel-arrow">↓ <span style="color:var(--danger);font-size:12px;">${dropOff>0?`-${Utils.fmtNum(dropOff)} farmers (${dropPct}% drop-off)`:''}</span></div>` : '';
-      return `
+    const drops = [null, dropEnrollPay, dropPayDeliv];
+    const rows = stages.map((s, i) => {
+      const drop    = drops[i] || 0;
+      const dropPct = enrolled > 0 ? (drop / enrolled * 100).toFixed(1) : '0';
+      const stageHTML = `
         <div class="funnel-stage" style="--fill:${s.pct.toFixed(0)}%">
+          <div class="funnel-step-node">${i + 1}</div>
           <div class="funnel-stage-icon">${s.icon}</div>
           <div class="funnel-stage-label">${s.label}</div>
           <div style="display:flex;align-items:baseline;gap:4px">
             <div class="funnel-stage-count" style="color:${s.color}">${Utils.fmtNum(s.count)}</div>
             <div class="funnel-stage-pct">${s.pct.toFixed(1)}%</div>
           </div>
-        </div>
-        ${arrow}`;
+        </div>`;
+      const connectorHTML = i < stages.length - 1 ? `
+        <div class="funnel-connector">
+          <div class="funnel-connector-line"></div>
+          ${drop > 0
+            ? `<div class="funnel-drop-label">−${Utils.fmtNum(drop)} farmers (${dropPct}% drop-off)</div>`
+            : `<div class="funnel-drop-label none">✓ No drop-off</div>`}
+          <div class="funnel-connector-line"></div>
+        </div>` : '';
+      return stageHTML + connectorHTML;
     }).join('');
+    el.innerHTML = `<div class="pipeline-timeline">${rows}</div>`;
   },
 
   _zoneConversion(f, p, d) {
