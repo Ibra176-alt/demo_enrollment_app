@@ -636,31 +636,347 @@ body {
     <div class="insight-grid" id="overview-insights"></div>
   </div>
 
-  <!-- ══ ENROLLMENT (Phase 2) ════════════════════════════ -->
+  <!-- ══ ENROLLMENT INTELLIGENCE ═══════════════════════════ -->
   <div class="tab-page" id="tab-enrollment">
-    <div class="placeholder-page" id="enrollment-placeholder">
-      <div class="placeholder-icon">👥</div>
-      <div class="placeholder-label">Enrollment Intelligence — Building Phase 2...</div>
+    <div class="section-header">
+      <div>
+        <div class="section-title">Enrollment Intelligence</div>
+        <div class="section-subtitle">Complete farmer registration analytics — Business &amp; Impact KPIs</div>
+      </div>
+      <span class="section-badge">● 20 KPIs Live</span>
     </div>
-    <div id="enrollment-content" style="display:none"></div>
+
+    <!-- Business KPIs Row -->
+    <div style="font-size:11px;font-weight:700;color:var(--green-700);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">📊 Business KPIs</div>
+    <div class="kpi-grid" id="enr-biz-kpis"></div>
+
+    <!-- Charts Row 1: Trend + Gender -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Daily Enrollment Velocity</div><div class="chart-subtitle">Registration pace by date</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Daily Enrollment Velocity','Count of new enrollments by date. Spikes indicate high-activity field days. Gaps may indicate field team inactivity or data entry delays.')">i</button>
+        </div>
+        <div class="echart" id="enr-velocity" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Gender Distribution</div><div class="chart-subtitle">Male vs Female participation</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Gender Distribution','Shows the male vs female split across all enrolled farmers. Target: ≥50% female for strong gender inclusion performance.')">i</button>
+        </div>
+        <div class="echart" id="enr-gender" style="height:240px"></div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2: Field Officer + Package -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Field Officer Performance (VANO)</div><div class="chart-subtitle">Enrollments per Village Agent Officer</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Field Officer Performance','Ranks VANOs by total enrollments. Identifies top performers and underperformers for coaching and recognition decisions.')">i</button>
+        </div>
+        <div class="echart" id="enr-vano" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Package Demand Analysis</div><div class="chart-subtitle">Most selected intervention packages</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Package Demand Analysis','Shows farmer preference by package type. Drives procurement planning and supply chain prioritization.')">i</button>
+        </div>
+        <div class="echart" id="enr-package" style="height:240px"></div>
+      </div>
+    </div>
+
+    <!-- Charts Row 3: Growth Rate + Group Membership -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Enrollment Growth Rate</div><div class="chart-subtitle">Monthly registration momentum</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Enrollment Growth Rate','Month-over-month % change in new enrollments. Positive = growing program. Negative = declining intake requiring intervention.')">i</button>
+        </div>
+        <div class="echart" id="enr-growth" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Active Group Density</div><div class="chart-subtitle">Beneficiary count per community group</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Active Group Density','Shows how many farmers belong to each group. Larger groups = stronger community clusters and social capital.')">i</button>
+        </div>
+        <div class="echart" id="enr-groups" style="height:240px"></div>
+      </div>
+    </div>
+
+    <!-- Charts Row 4: Zone penetration + Position distribution -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Geographic Penetration by Zone</div><div class="chart-subtitle">Enrollment spread across operational zones</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Geographic Penetration','Enrollment count by zone. Identifies strongest and weakest operational territories for resource reallocation.')">i</button>
+        </div>
+        <div class="echart" id="enr-zone" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Community Leadership Roles</div><div class="chart-subtitle">Group position distribution</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Community Leadership Participation','Distribution of farmers by their role/position within community groups. Higher leadership density = stronger social structures.')">i</button>
+        </div>
+        <div class="echart" id="enr-positions" style="height:240px"></div>
+      </div>
+    </div>
+
+    <!-- Impact KPIs -->
+    <div style="font-size:11px;font-weight:700;color:var(--green-700);text-transform:uppercase;letter-spacing:1px;margin:28px 0 12px;">🌍 Impact KPIs</div>
+    <div class="kpi-grid" id="enr-impact-kpis"></div>
+
+    <!-- Impact Charts Row 1 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Nutrition Exposure Funnel</div><div class="chart-subtitle">Total people exposed to nutrition interventions</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Nutrition Exposure Estimate','Layered breakdown: enrolled farmers → total household members → children under 5 → breastfeeding children. Shows cascading program impact.')">i</button>
+        </div>
+        <div class="echart" id="enr-nutrition-funnel" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Inclusion Equity Radar</div><div class="chart-subtitle">Balance across gender, zone, and group participation</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Inclusion Equity Score','Multi-axis radar measuring program balance. Ideal: high scores across all dimensions. Gaps indicate where inclusion efforts are needed.')">i</button>
+        </div>
+        <div class="echart" id="enr-equity-radar" style="height:240px"></div>
+      </div>
+    </div>
+
+    <!-- Impact Charts Row 2 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Vulnerable Household Segmentation</div><div class="chart-subtitle">Households with children under 5 or breastfeeding</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Vulnerable Household Ratio','Identifies the proportion of enrolled households with vulnerable members (children under 5 or breastfeeding). These households need priority nutrition support.')">i</button>
+        </div>
+        <div class="echart" id="enr-vulnerable" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Village Outreach Reach</div><div class="chart-subtitle">Enrollments per village — top 15</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Rural Outreach Strength','Shows enrollment density per village. Identifies high-performing villages and those needing targeted mobilization.')">i</button>
+        </div>
+        <div class="echart" id="enr-villages" style="height:240px"></div>
+      </div>
+    </div>
+
+    <!-- Enrollment Insights -->
+    <div class="insight-grid" id="enr-insights"></div>
   </div>
 
-  <!-- ══ PAYMENT (Phase 3) ══════════════════════════════ -->
+  <!-- ══ PAYMENT INTELLIGENCE ════════════════════════════ -->
   <div class="tab-page" id="tab-payment">
-    <div class="placeholder-page" id="payment-placeholder">
-      <div class="placeholder-icon">💳</div>
-      <div class="placeholder-label">Payment Intelligence — Building Phase 3...</div>
+    <div class="section-header">
+      <div>
+        <div class="section-title">Payment Intelligence</div>
+        <div class="section-subtitle">Revenue collection, agent performance &amp; farmer payment analytics</div>
+      </div>
+      <span class="section-badge">● 19 KPIs Live</span>
     </div>
-    <div id="payment-content" style="display:none"></div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--green-700);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">💰 Business KPIs</div>
+    <div class="kpi-grid" id="pay-biz-kpis"></div>
+
+    <!-- Charts Row 1 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Revenue by Zone</div><div class="chart-subtitle">Total actual payments collected per zone</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Revenue by Zone','Total TZS collected per operational zone. Identifies strongest revenue territories and zones needing collection follow-up.')">i</button>
+        </div>
+        <div class="echart" id="pay-zone-revenue" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Collection Rate Distribution</div><div class="chart-subtitle">% of package cost paid per farmer segment</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Collection Rate','Total Actual Paid ÷ Total Package Cost × 100. Green &gt;80%, Yellow 60–80%, Red &lt;60%.')">i</button>
+        </div>
+        <div class="echart" id="pay-collection-dist" style="height:240px"></div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Top Village Agents by Revenue</div><div class="chart-subtitle">Ranked leaderboard of agent collections</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Top Performing Village Agents','Sum of Actual Paid (TZS) grouped by Village Agent. Identifies highest revenue-generating agents for recognition and benchmarking.')">i</button>
+        </div>
+        <div class="echart" id="pay-agent-leaderboard" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Package Demand Trend</div><div class="chart-subtitle">Farmer count by package selected</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Package Demand Trend','Count of farmers per package name. Drives procurement prioritization and supply chain planning.')">i</button>
+        </div>
+        <div class="echart" id="pay-package-demand" style="height:240px"></div>
+      </div>
+    </div>
+
+    <!-- Charts Row 3 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Delivery Completion Funnel</div><div class="chart-subtitle">Payment to delivery pipeline</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Delivery Completion Rate','Farmers who received delivery ÷ Total farmers × 100. Measures fulfillment efficiency and post-payment operations.')">i</button>
+        </div>
+        <div class="echart" id="pay-delivery-funnel" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Overpayment vs Underpayment</div><div class="chart-subtitle">Payment compliance segmentation</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Overpayment Rate','Farmers who paid above 100% of package cost. Shows farmer commitment and may indicate pricing calibration opportunities.')">i</button>
+        </div>
+        <div class="echart" id="pay-payment-segments" style="height:240px"></div>
+      </div>
+    </div>
+
+    <!-- Charts Row 4 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Program Adoption Growth</div><div class="chart-subtitle">New farmers joining per month</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Program Adoption Growth','New farmers per month based on payment records. Tracks program expansion momentum over time.')">i</button>
+        </div>
+        <div class="echart" id="pay-adoption-growth" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Economic Participation Value</div><div class="chart-subtitle">Cumulative payments over time</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Economic Participation Value','Cumulative total of all actual payments over time. Shows the growing economic contribution of farmers to the program.')">i</button>
+        </div>
+        <div class="echart" id="pay-cumulative" style="height:240px"></div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--green-700);text-transform:uppercase;letter-spacing:1px;margin:28px 0 12px;">🌍 Impact KPIs</div>
+    <div class="kpi-grid" id="pay-impact-kpis"></div>
+
+    <!-- Village distribution + Agent reach -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Rural Village Penetration</div><div class="chart-subtitle">Payment activity by village</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Rural Penetration','Villages actively participating in payments. Broader village reach = stronger rural economic inclusion.')">i</button>
+        </div>
+        <div class="echart" id="pay-village-reach" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">High Commitment Farmers</div><div class="chart-subtitle">Farmers who paid 100%+ of package cost</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'High Commitment Farmers','Farmers with % of Package Cost Paid ≥ 100%. These are the program champions — fully committed financially.')">i</button>
+        </div>
+        <div class="echart" id="pay-high-commitment" style="height:240px"></div>
+      </div>
+    </div>
+
+    <div class="insight-grid" id="pay-insights"></div>
   </div>
 
-  <!-- ══ DELIVERY (Phase 4) ════════════════════════════ -->
+  <!-- ══ DELIVERY INTELLIGENCE ═══════════════════════════ -->
   <div class="tab-page" id="tab-delivery">
-    <div class="placeholder-page" id="delivery-placeholder">
-      <div class="placeholder-icon">🚚</div>
-      <div class="placeholder-label">Delivery Intelligence — Building Phase 4...</div>
+    <div class="section-header">
+      <div>
+        <div class="section-title">Delivery Intelligence</div>
+        <div class="section-subtitle">Package delivery performance, farmer satisfaction &amp; operational analytics</div>
+      </div>
+      <span class="section-badge">● 20 KPIs Live</span>
     </div>
-    <div id="delivery-content" style="display:none"></div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--green-700);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">🚚 Business KPIs</div>
+    <div class="kpi-grid" id="del-biz-kpis"></div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Delivery Growth Rate</div><div class="chart-subtitle">Monthly delivery momentum</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Delivery Growth Rate','((Current Month Deliveries − Previous Month) ÷ Previous Month) × 100. Shows how fast delivery operations are scaling.')">i</button>
+        </div>
+        <div class="echart" id="del-growth" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Package Distribution</div><div class="chart-subtitle">Which packages are being delivered most</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Package Distribution','Count of deliveries by Package Delivered. Reveals which products are moving fastest through the supply chain.')">i</button>
+        </div>
+        <div class="echart" id="del-package-dist" style="height:240px"></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Delivery Coverage by Zone</div><div class="chart-subtitle">Geographic delivery penetration</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Delivery Coverage by Zone','Count of farmers delivered per zone. Identifies zones with strong delivery operations and those needing logistics attention.')">i</button>
+        </div>
+        <div class="echart" id="del-zone-coverage" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">NSP Score Distribution</div><div class="chart-subtitle">Farmer satisfaction ratings</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Farmer Satisfaction (NSP Score)','Average NSP Score per zone/month. Higher = farmers are more satisfied with the program delivery experience.')">i</button>
+        </div>
+        <div class="echart" id="del-nsp-dist" style="height:240px"></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Daily Delivery Performance</div><div class="chart-subtitle">Deliveries completed per day</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Daily Delivery Performance','Count of deliveries per calendar date. Identifies peak delivery days and operational gaps or seasonal patterns.')">i</button>
+        </div>
+        <div class="echart" id="del-daily" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Enrollment-to-Delivery Timeline</div><div class="chart-subtitle">Days from enrollment to package receipt</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Average Delivery Time','Distribution of Enrollment-to-Delivery Days. Lower days = more efficient operations. Outliers reveal bottlenecks.')">i</button>
+        </div>
+        <div class="echart" id="del-timeline" style="height:240px"></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Zone Equity Distribution</div><div class="chart-subtitle">Fair regional delivery balance</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Zone Equity Distribution','Deliveries per zone compared side-by-side. Reveals whether resources are equitably distributed across all zones.')">i</button>
+        </div>
+        <div class="echart" id="del-zone-equity" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Farmer Engagement Trend</div><div class="chart-subtitle">Active deliveries over time</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Farmer Engagement Trend','Active farmers receiving deliveries over time. A flowing upward trend shows growing operational momentum.')">i</button>
+        </div>
+        <div class="echart" id="del-engagement" style="height:240px"></div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--green-700);text-transform:uppercase;letter-spacing:1px;margin:28px 0 12px;">🌍 Impact KPIs</div>
+    <div class="kpi-grid" id="del-impact-kpis"></div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Gender Ratio in Deliveries</div><div class="chart-subtitle">Women empowerment score</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Women Empowerment Score','Female Farmers ÷ Total Delivered × 100. Tracks gender inclusion in actual delivery outcomes, not just enrollment.')">i</button>
+        </div>
+        <div class="echart" id="del-gender" style="height:240px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="chart-title">Village Delivery Reach</div><div class="chart-subtitle">Rural penetration by delivery count</div></div>
+          <button class="info-btn" onclick="showTooltip(event,'Rural Reach Index','Count of unique villages receiving deliveries. Broad village coverage = strong rural market penetration.')">i</button>
+        </div>
+        <div class="echart" id="del-village-reach" style="height:240px"></div>
+      </div>
+    </div>
+
+    <div class="insight-grid" id="del-insights"></div>
   </div>
 
   <!-- ══ GEOGRAPHIC (Phase 5) ══════════════════════════ -->
@@ -1484,6 +1800,820 @@ async function init() {
     }, 3000);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   ENROLLMENT INTELLIGENCE ENGINE  (Phase 2)
+═══════════════════════════════════════════════════════════ */
+const EnrollmentEngine = {
+  render() {
+    const f = AppState.filtered.farmers;
+    if (!f.length) { this._empty(); return; }
+
+    /* ── Business KPIs ── */
+    const total = f.length;
+
+    // Growth rate
+    const byMonth = {};
+    f.forEach(r => { const mk = Utils.monthKey(r['DATE CREATED']); byMonth[mk] = (byMonth[mk]||0)+1; });
+    const months = Object.keys(byMonth).sort();
+    let growthRate = 0, prevCount = 0, curCount = 0;
+    if (months.length >= 2) {
+      curCount  = byMonth[months[months.length-1]];
+      prevCount = byMonth[months[months.length-2]];
+      growthRate = prevCount > 0 ? ((curCount - prevCount)/prevCount)*100 : 0;
+    }
+
+    // Gender
+    const gCounts = Utils.countBy(f, 'GENDER');
+    const female  = gCounts['Female'] || 0;
+    const male    = gCounts['Male']   || 0;
+    const femaleRatio = total > 0 ? (female/total)*100 : 0;
+
+    // Group membership
+    const inGroup = f.filter(r => {
+      const v = (r['BELONGS IN A GROUP?'] || '').toLowerCase();
+      return v === 'yes' || v === 'true' || v === '1';
+    }).length;
+    const groupRate = total > 0 ? (inGroup/total)*100 : 0;
+
+    // Household
+    const totalHH  = Utils.sumBy(f, 'MEMBERS IN HOUSEHOLD');
+    const avgHH    = total > 0 ? totalHH/total : 0;
+    const zones    = Utils.unique(f, 'Zone').length;
+    const villages = Utils.unique(f, 'Village').length;
+
+    // Children / breastfeeding
+    const under5  = Utils.sumBy(f, 'CHILDREN UNDER 5 YEARS OLD');
+    const bfeed   = Utils.sumBy(f, 'BREAST FEEDING CHILDREN');
+
+    // Vulnerable households
+    const vulnHH = f.filter(r => Utils.parseNum(r['CHILDREN UNDER 5 YEARS OLD']) > 0 || Utils.parseNum(r['BREAST FEEDING CHILDREN']) > 0).length;
+    const vulnRatio = total > 0 ? (vulnHH/total)*100 : 0;
+
+    // Nutrition exposure
+    const nutritionExposure = totalHH + under5;
+
+    // Social cohesion index
+    const socialCohesion = groupRate;
+
+    // Inclusion equity score (weighted average of femaleRatio, groupRate, zone diversity)
+    const zoneMax = 10; // expected max zones for full score
+    const zoneScore = Math.min((zones/zoneMax)*100, 100);
+    const inclusionScore = (femaleRatio + groupRate + zoneScore) / 3;
+
+    KPIEngine.render('enr-biz-kpis', [
+      { icon:'👥', label:'Total Enrollments',      value: Utils.fmtNum(total),       rawValue: total, format:'num', trend: growthRate,
+        info:'Count of unique farmer IDs registered in the program. The core enrollment metric.' },
+      { icon:'📈', label:'Enrollment Growth Rate', value: Utils.fmtPct(growthRate),  rawValue: Math.abs(growthRate), format:'pct',
+        info:'Month-over-month % change. Formula: (Current Month − Previous Month) ÷ Previous Month × 100. Positive = growing intake.' },
+      { icon:'♀️', label:'Female Ratio',           value: Utils.fmtPct(femaleRatio), rawValue: femaleRatio, format:'pct',
+        info:'Percentage of enrolled farmers who are female. Target ≥50% for gender parity.' },
+      { icon:'🤝', label:'Group Membership Rate',  value: Utils.fmtPct(groupRate),   rawValue: groupRate, format:'pct',
+        info:'Farmers enrolled in community groups ÷ Total. High rate = strong social cohesion and peer support networks.' },
+      { icon:'🏠', label:'Avg Household Reach',    value: avgHH.toFixed(1),          rawValue: avgHH, format:'dec', suffix:'',
+        info:'Average household members per farmer. Formula: Sum of MEMBERS IN HOUSEHOLD ÷ Total Farmers. Measures family-level reach.' },
+      { icon:'🗺️', label:'Zones Reached',          value: Utils.fmtNum(zones),        rawValue: zones, format:'num',
+        info:'Number of unique operational zones with at least one enrolled farmer. Measures geographic program spread.' },
+      { icon:'🏘️', label:'Villages Reached',       value: Utils.fmtNum(villages),     rawValue: villages, format:'num',
+        info:'Number of unique villages with enrolled farmers. Core rural outreach metric.' },
+      { icon:'📦', label:'Active Groups',           value: Utils.fmtNum(Object.keys(Utils.countBy(f,'GROUP NAME')).filter(k=>k&&k!=='Unknown').length), rawValue: 0,
+        info:'Number of distinct community groups with enrolled members. Measures community network density.' },
+      { icon:'👨‍👩‍👧', label:'Household Impact',        value: Utils.fmtNum(totalHH),     rawValue: totalHH, format:'num',
+        info:'Total household members indirectly impacted. Sum of MEMBERS IN HOUSEHOLD. Multiplier of program reach.' },
+      { icon:'🌱', label:'Current Month Enrolled',  value: Utils.fmtNum(curCount),    rawValue: curCount, format:'num',
+        info:'New enrollments in the most recent calendar month. Tracks real-time field intake momentum.' }
+    ]);
+
+    KPIEngine.render('enr-impact-kpis', [
+      { icon:'👨‍👩‍👧', label:'Household Impact Reach',  value: Utils.fmtNum(totalHH),    rawValue: totalHH, format:'num',
+        info:'Total people indirectly reached via enrolled farmers. Sum of MEMBERS IN HOUSEHOLD.' },
+      { icon:'👶', label:'Children Under 5',           value: Utils.fmtNum(under5),     rawValue: under5, format:'num',
+        info:'Children under 5 years old in enrolled households. Nutrition exposure at the most critical developmental stage.' },
+      { icon:'🤱', label:'Breastfeeding Coverage',     value: Utils.fmtNum(bfeed),      rawValue: bfeed, format:'num',
+        info:'Breastfeeding children in enrolled households. Measures support to the most nutritionally vulnerable mothers.' },
+      { icon:'♀️', label:'Women Participation Rate',   value: Utils.fmtPct(femaleRatio),rawValue: femaleRatio, format:'pct',
+        info:'Female farmers ÷ Total farmers × 100. Core gender inclusion metric.' },
+      { icon:'⚠️', label:'Vulnerable Household Ratio', value: Utils.fmtPct(vulnRatio),  rawValue: vulnRatio, format:'pct',
+        info:'Households with children under 5 OR breastfeeding children ÷ Total. These need priority nutrition intervention.' },
+      { icon:'🔗', label:'Social Cohesion Index',      value: Utils.fmtPct(socialCohesion), rawValue: socialCohesion, format:'pct',
+        info:'% of farmers enrolled in community groups. High values indicate strong community network participation.' },
+      { icon:'🍽️', label:'Nutrition Exposure Estimate', value: Utils.fmtNum(nutritionExposure), rawValue: nutritionExposure, format:'num',
+        info:'Estimated people exposed to nutrition interventions. Formula: Total Household Members + Children Under 5.' },
+      { icon:'🌍', label:'Rural Outreach Strength',    value: Utils.fmtNum(villages),   rawValue: villages, format:'num',
+        info:'Unique villages reached. Measures depth of rural penetration.' },
+      { icon:'⚖️', label:'Inclusion Equity Score',     value: Utils.fmtPct(inclusionScore), rawValue: inclusionScore, format:'pct',
+        info:'Weighted balance across gender ratio, group participation, and zone diversity. 100% = perfect equity across all dimensions.' },
+      { icon:'📊', label:'Vulnerable Households',      value: Utils.fmtNum(vulnHH),     rawValue: vulnHH, format:'num',
+        info:'Absolute count of households with at least one child under 5 or breastfeeding child.' }
+    ]);
+
+    /* ── Charts ── */
+    this._velocityChart(f, byMonth, months);
+    this._genderChart(gCounts, total);
+    this._vanoChart(f);
+    this._packageChart(f);
+    this._growthChart(byMonth, months);
+    this._groupsChart(f);
+    this._zoneChart(f);
+    this._positionsChart(f);
+    this._nutritionFunnel(total, totalHH, under5, bfeed);
+    this._equityRadar(femaleRatio, groupRate, zoneScore, vulnRatio, socialCohesion);
+    this._vulnerableChart(f);
+    this._villagesChart(f);
+    this._renderInsights(f, { total, growthRate, femaleRatio, groupRate, vulnRatio, zones, villages, avgHH });
+  },
+
+  _empty() {
+    ['enr-biz-kpis','enr-impact-kpis'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '<div style="padding:20px;color:var(--gray-400);font-size:13px;">No data matches current filters.</div>';
+    });
+  },
+
+  _velocityChart(f, byMonth, months) {
+    const sortedMonths = months.slice().sort();
+    ChartEngine.lineChart('enr-velocity',
+      sortedMonths.map(Utils.monthLabel),
+      [{ name:'Enrollments', data: sortedMonths.map(m => byMonth[m] || 0) }]
+    );
+  },
+
+  _genderChart(gCounts, total) {
+    const data = Object.entries(gCounts).map(([k,v]) => ({
+      name: k || 'Unknown', value: v,
+      color: k==='Female' ? '#2E8B4A' : k==='Male' ? '#c8e63a' : '#9ca3af'
+    }));
+    ChartEngine.donutChart('enr-gender', data);
+  },
+
+  _vanoChart(f) {
+    const counts = Utils.countBy(f, 'VANO');
+    const sorted = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,12);
+    ChartEngine.hBarChart('enr-vano', sorted.map(([k])=>k), sorted.map(([,v])=>v));
+  },
+
+  _packageChart(f) {
+    const counts = Utils.countBy(f, 'PACKAGE');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,10);
+    ChartEngine.barChart('enr-package', entries.map(([k])=>k), [{ name:'Farmers', data: entries.map(([,v])=>v) }]);
+  },
+
+  _growthChart(byMonth, months) {
+    const sortedMonths = months.slice().sort();
+    const rates = sortedMonths.map((m, i) => {
+      if (i === 0) return 0;
+      const cur = byMonth[m] || 0;
+      const prv = byMonth[sortedMonths[i-1]] || 0;
+      return prv > 0 ? parseFloat(((cur-prv)/prv*100).toFixed(1)) : 0;
+    });
+    const chart = ChartEngine.init('enr-growth');
+    if (!chart) return;
+    chart.setOption({
+      ...ChartEngine.baseOption(),
+      xAxis: { type:'category', data: sortedMonths.map(Utils.monthLabel), axisLabel:{color:'#9ca3af',fontSize:11}, axisTick:{show:false} },
+      yAxis: { type:'value', axisLabel:{color:'#9ca3af',fontSize:11,formatter:v=>v+'%'}, splitLine:{lineStyle:{color:'#f3f4f6'}} },
+      series: [{
+        type:'bar', data: rates,
+        barMaxWidth:36,
+        itemStyle:{ color: params => rates[params.dataIndex] >= 0 ? '#2E8B4A' : '#e53e3e', borderRadius:[4,4,0,0] },
+        label:{ show:true, position:'top', color:'#6b7280', fontSize:11, formatter: v=>v.value+'%' }
+      }],
+      tooltip:{ ...ChartEngine.baseOption().tooltip, trigger:'axis', formatter: p=>`${p[0].name}<br/>Growth: ${p[0].value}%` }
+    });
+  },
+
+  _groupsChart(f) {
+    const counts = Utils.countBy(f, 'GROUP NAME');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,15);
+    ChartEngine.hBarChart('enr-groups', entries.map(([k])=>k), entries.map(([,v])=>v));
+  },
+
+  _zoneChart(f) {
+    const counts = Utils.countBy(f, 'Zone');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]);
+    ChartEngine.barChart('enr-zone', entries.map(([k])=>k), [{ name:'Enrollments', data: entries.map(([,v])=>v) }]);
+  },
+
+  _positionsChart(f) {
+    const counts = Utils.countBy(f, 'POSITION IN GROUP');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]);
+    ChartEngine.donutChart('enr-positions', entries.map(([k,v]) => ({ name:k, value:v })));
+  },
+
+  _nutritionFunnel(total, hh, under5, bfeed) {
+    const chart = ChartEngine.init('enr-nutrition-funnel');
+    if (!chart) return;
+    chart.setOption({
+      ...ChartEngine.baseOption(),
+      tooltip:{ ...ChartEngine.baseOption().tooltip, trigger:'item', formatter:'{b}: {c}' },
+      series:[{
+        type:'funnel', width:'70%', left:'15%', top:20, bottom:20,
+        sort:'none',
+        label:{ position:'inside', color:'#fff', fontSize:12, fontWeight:600 },
+        data:[
+          { value: total,  name:'Enrolled Farmers', itemStyle:{color:'#1B6B2B'} },
+          { value: hh,     name:'Household Members', itemStyle:{color:'#2E8B4A'} },
+          { value: under5, name:'Children Under 5', itemStyle:{color:'#52c974'} },
+          { value: bfeed,  name:'Breastfeeding',    itemStyle:{color:'#c8e63a'} }
+        ]
+      }]
+    });
+  },
+
+  _equityRadar(femaleRatio, groupRate, zoneScore, vulnRatio, socialCohesion) {
+    const chart = ChartEngine.init('enr-equity-radar');
+    if (!chart) return;
+    chart.setOption({
+      ...ChartEngine.baseOption(),
+      tooltip:{ ...ChartEngine.baseOption().tooltip },
+      radar:{
+        indicator:[
+          { name:'Gender Equity', max:100 },
+          { name:'Group Participation', max:100 },
+          { name:'Zone Coverage', max:100 },
+          { name:'Vulnerable Reach', max:100 },
+          { name:'Social Cohesion', max:100 }
+        ],
+        splitArea:{ areaStyle:{ color:['rgba(46,139,74,0.04)','rgba(46,139,74,0.02)'] } },
+        splitLine:{ lineStyle:{ color:'#e5e7eb' } },
+        axisName:{ color:'#6b7280', fontSize:11 }
+      },
+      series:[{
+        type:'radar',
+        data:[{
+          value:[femaleRatio, groupRate, zoneScore, Math.min(vulnRatio,100), socialCohesion],
+          name:'Inclusion Score',
+          areaStyle:{ color:'rgba(46,139,74,0.15)' },
+          lineStyle:{ color:'#2E8B4A', width:2 },
+          itemStyle:{ color:'#2E8B4A' }
+        }]
+      }]
+    });
+  },
+
+  _vulnerableChart(f) {
+    const vuln    = f.filter(r => Utils.parseNum(r['CHILDREN UNDER 5 YEARS OLD'])>0 || Utils.parseNum(r['BREAST FEEDING CHILDREN'])>0).length;
+    const nonVuln = f.length - vuln;
+    ChartEngine.donutChart('enr-vulnerable', [
+      { name:'Vulnerable HH', value:vuln,    color:'#e53e3e' },
+      { name:'Non-Vulnerable', value:nonVuln, color:'#2E8B4A' }
+    ]);
+  },
+
+  _villagesChart(f) {
+    const counts  = Utils.countBy(f, 'Village');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,15);
+    ChartEngine.hBarChart('enr-villages', entries.map(([k])=>k), entries.map(([,v])=>v));
+  },
+
+  _renderInsights(f, { total, growthRate, femaleRatio, groupRate, vulnRatio, zones, villages, avgHH }) {
+    const el = document.getElementById('enr-insights');
+    if (!el) return;
+    const topVano = (() => {
+      const c = Utils.countBy(f,'VANO');
+      const e = Object.entries(c).sort((a,b)=>b[1]-a[1]);
+      return e.length ? e[0] : null;
+    })();
+    const topPkg = (() => {
+      const c = Utils.countBy(f,'PACKAGE');
+      const e = Object.entries(c).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]);
+      return e.length ? e[0] : null;
+    })();
+
+    const insights = [
+      { icon:'📈', type: growthRate>0?'green':'yellow',
+        title: `Enrollment ${growthRate>0?'Growing':'Flat'} at ${Math.abs(growthRate).toFixed(1)}% MoM`,
+        text: growthRate>0 ? 'Registration momentum is positive. Field teams are driving strong intake this month.'
+          : 'Month-over-month growth is flat or declining. Consider intensifying VANO activities in low-performing zones.' },
+      { icon:'👥', type: total>0?'green':'red',
+        title: `${Utils.fmtNum(total)} Farmers Enrolled Across ${villages} Villages`,
+        text: `Program has reached ${zones} operational zones with an average household size of ${avgHH.toFixed(1)} members per farmer.` },
+      { icon: femaleRatio>=50?'✅':'⚠️', type: femaleRatio>=50?'green':'yellow',
+        title: `${femaleRatio.toFixed(1)}% Female Participation`,
+        text: femaleRatio>=50 ? 'Gender inclusion is on target. The program is successfully reaching women farmers.'
+          : 'Female participation is below 50% parity. Targeted women outreach recommended in underperforming zones.' },
+      { icon:'⚠️', type: vulnRatio>=30?'yellow':'green',
+        title: `${vulnRatio.toFixed(1)}% Vulnerable Households`,
+        text: `${Utils.fmtNum(f.filter(r=>Utils.parseNum(r['CHILDREN UNDER 5 YEARS OLD'])>0||Utils.parseNum(r['BREAST FEEDING CHILDREN'])>0).length)} households have children under 5 or breastfeeding members requiring priority nutrition support.` },
+      topVano ? { icon:'🏆', type:'green',
+        title: `Top VANO: ${topVano[0]} (${topVano[1]} enrollments)`,
+        text: 'This field officer leads all VANOs in farmer registration. Benchmark their approach for team-wide training.' } : null,
+      topPkg ? { icon:'📦', type:'blue',
+        title: `Most Popular Package: ${topPkg[0]}`,
+        text: `${topPkg[1]} farmers selected this package. Ensure sufficient supply to meet high demand and avoid stockouts.` } : null
+    ].filter(Boolean);
+
+    el.innerHTML = insights.map(ins => `
+      <div class="insight-card">
+        <div class="insight-icon ${ins.type}">${ins.icon}</div>
+        <div><div class="insight-title">${ins.title}</div><div class="insight-text">${ins.text}</div></div>
+      </div>`).join('');
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   PAYMENT INTELLIGENCE ENGINE  (Phase 3)
+═══════════════════════════════════════════════════════════ */
+const PaymentEngine = {
+  render() {
+    const p = AppState.filtered.payments;
+    if (!p.length) { this._empty(); return; }
+
+    const totalFarmers    = p.length;
+    const totalActualPaid = Utils.sumBy(p, 'Actual Paid (TZS)');
+    const totalPkgCost    = Utils.sumBy(p, 'Package Cost (TZS)');
+    const totalActualUSD  = Utils.sumBy(p, 'Actual Paid (USD)');
+    const collectionRate  = totalPkgCost > 0 ? (totalActualPaid / totalPkgCost) * 100 : 0;
+    const outstanding     = Math.max(0, totalPkgCost - totalActualPaid);
+    const avgInstallments = Utils.avgBy(p, 'Payment Counts');
+
+    // Overpayment / underpayment
+    const overpaid   = p.filter(r => Utils.parseNum(r['% of Package Cost Paid']) > 100).length;
+    const fullPaid   = p.filter(r => Utils.parseNum(r['% of Package Cost Paid']) >= 100).length;
+    const partialPay = p.filter(r => { const v = Utils.parseNum(r['% of Package Cost Paid']); return v > 0 && v < 100; }).length;
+    const zeroPaid   = p.filter(r => Utils.parseNum(r['% of Package Cost Paid']) === 0).length;
+    const overpaidRate = totalFarmers > 0 ? (overpaid / totalFarmers) * 100 : 0;
+
+    // Delivered
+    const delivered = p.filter(r => (r['Delivered Status']||'').toLowerCase() === 'delivered').length;
+    const deliveryRate = totalFarmers > 0 ? (delivered / totalFarmers) * 100 : 0;
+
+    // Installment payers
+    const installmentPayers = p.filter(r => Utils.parseNum(r['Payment Counts']) > 1).length;
+    const financialInclusionRate = totalFarmers > 0 ? (installmentPayers / totalFarmers) * 100 : 0;
+
+    // Villages
+    const uniqueVillages = Utils.unique(p, 'Village').length;
+    const avgRevenuePerFarmer = totalFarmers > 0 ? totalActualPaid / totalFarmers : 0;
+
+    // Payment reliability score (avg % paid * normalized payment count)
+    const avgPctPaid = Utils.avgBy(p, '% of Package Cost Paid');
+    const paymentReliability = Math.min((avgPctPaid + (avgInstallments * 10)) / 2, 100);
+
+    KPIEngine.render('pay-biz-kpis', [
+      { icon:'💰', label:'Revenue Collected (TZS)', value: Utils.fmtCurrency(totalActualPaid), rawValue: totalActualPaid,
+        info:'Sum of Actual Paid (TZS) from all payment records. Total money collected from farmers.' },
+      { icon:'💵', label:'Revenue (USD)',            value: `$${Utils.fmtNum(totalActualUSD,0)}`, rawValue: totalActualUSD,
+        info:'Sum of Actual Paid (USD). Useful for international reporting and donor communications.' },
+      { icon:'📊', label:'Collection Rate',          value: Utils.fmtPct(collectionRate), rawValue: collectionRate, format:'pct',
+        info:'Total Actual Paid ÷ Total Package Cost × 100. Green >80%, Yellow 60–80%, Red <60%.' },
+      { icon:'🔴', label:'Outstanding Balance',      value: Utils.fmtCurrency(outstanding), rawValue: outstanding,
+        info:'Package Cost − Actual Paid. Money still owed by farmers. Drives collections prioritization.' },
+      { icon:'🚚', label:'Delivery Rate',            value: Utils.fmtPct(deliveryRate), rawValue: deliveryRate, format:'pct',
+        info:'Farmers who received delivery ÷ Total × 100. Measures fulfillment efficiency post-payment.' },
+      { icon:'🔄', label:'Avg Payment Installments', value: avgInstallments.toFixed(1),  rawValue: avgInstallments,
+        info:'Average number of payment transactions per farmer. Higher = more installment-based payments.' },
+      { icon:'📦', label:'Packages Expected',        value: Utils.fmtNum(totalFarmers),  rawValue: totalFarmers, format:'num',
+        info:'Total number of farmers with payment records. Represents expected package fulfillment count.' },
+      { icon:'⬆️', label:'Overpayment Rate',         value: Utils.fmtPct(overpaidRate),  rawValue: overpaidRate, format:'pct',
+        info:'Farmers who paid above 100% of package cost. Shows over-commitment or pricing flexibility.' },
+      { icon:'💎', label:'Avg Revenue / Farmer',     value: Utils.fmtCurrency(avgRevenuePerFarmer), rawValue: avgRevenuePerFarmer,
+        info:'Total Investment ÷ Total Farmers. Shows average financial contribution per farmer.' },
+      { icon:'🏅', label:'Fully Paid Farmers',       value: Utils.fmtNum(fullPaid), rawValue: fullPaid, format:'num',
+        info:'Farmers who have paid 100% or more of their package cost. Core financial completion metric.' }
+    ]);
+
+    KPIEngine.render('pay-impact-kpis', [
+      { icon:'👥', label:'Farmers Reached',           value: Utils.fmtNum(totalFarmers), rawValue: totalFarmers, format:'num',
+        info:'Count of unique payment references. Total farmers impacted by the payment program.' },
+      { icon:'🚚', label:'Delivery Impact Rate',      value: Utils.fmtPct(deliveryRate), rawValue: deliveryRate, format:'pct',
+        info:'Farmers with Delivered Status = "Delivered" ÷ Total × 100. Measures fulfillment success.' },
+      { icon:'🏦', label:'Financial Inclusion Rate',  value: Utils.fmtPct(financialInclusionRate), rawValue: financialInclusionRate, format:'pct',
+        info:'Farmers paying in installments (Payment Counts > 1) ÷ Total. Measures flexible payment adoption.' },
+      { icon:'🏘️', label:'Rural Villages Active',     value: Utils.fmtNum(uniqueVillages), rawValue: uniqueVillages, format:'num',
+        info:'Count of unique villages with active payment records. Measures rural financial participation breadth.' },
+      { icon:'⭐', label:'Payment Reliability Score', value: Utils.fmtPct(paymentReliability), rawValue: paymentReliability, format:'pct',
+        info:'Composite score based on % of package cost paid and payment frequency. Higher = more reliable farmers.' },
+      { icon:'📈', label:'Partial Payers',            value: Utils.fmtNum(partialPay), rawValue: partialPay, format:'num',
+        info:'Farmers who have paid something but not yet 100% of their package cost. Opportunity for collection follow-up.' },
+      { icon:'💰', label:'Economic Value (TZS)',       value: Utils.fmtCurrency(totalActualPaid), rawValue: totalActualPaid,
+        info:'Total economic value injected into communities via farmer payments. Sum of all Actual Paid (TZS).' },
+      { icon:'🎯', label:'High Commitment Farmers',   value: Utils.fmtNum(fullPaid), rawValue: fullPaid, format:'num',
+        info:'Farmers with % Paid ≥ 100%. These are program champions with full financial commitment.' },
+      { icon:'⚡', label:'Zero-Payment Farmers',      value: Utils.fmtNum(zeroPaid), rawValue: zeroPaid, format:'num',
+        info:'Farmers with 0% payment completion. Requires urgent follow-up from village agents.' }
+    ]);
+
+    /* ── Charts ── */
+    this._zoneRevenue(p);
+    this._collectionDist(p);
+    this._agentLeaderboard(p);
+    this._packageDemand(p);
+    this._deliveryFunnel(totalFarmers, delivered, fullPaid, partialPay, zeroPaid);
+    this._paymentSegments(overpaid, fullPaid, partialPay, zeroPaid);
+    this._adoptionGrowth(p);
+    this._cumulativeRevenue(p);
+    this._villageReach(p);
+    this._highCommitment(p);
+    this._renderInsights(p, { totalFarmers, totalActualPaid, collectionRate, deliveryRate, overpaidRate, financialInclusionRate, uniqueVillages, outstanding });
+  },
+
+  _empty() {
+    ['pay-biz-kpis','pay-impact-kpis'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '<div style="padding:20px;color:var(--gray-400)">No data matches current filters.</div>';
+    });
+  },
+
+  _zoneRevenue(p) {
+    const byZone = {};
+    p.forEach(r => { const z = r['Zone']||'Unknown'; byZone[z]=(byZone[z]||0)+Utils.parseNum(r['Actual Paid (TZS)']); });
+    const entries = Object.entries(byZone).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,10);
+    ChartEngine.barChart('pay-zone-revenue', entries.map(([k])=>k), [{ name:'Revenue TZS', data: entries.map(([,v])=>Math.round(v)) }]);
+  },
+
+  _collectionDist(p) {
+    const buckets = { '0%':0, '1-25%':0, '26-50%':0, '51-75%':0, '76-99%':0, '100%+':0 };
+    p.forEach(r => {
+      const v = Utils.parseNum(r['% of Package Cost Paid']);
+      if (v===0) buckets['0%']++;
+      else if (v<=25)  buckets['1-25%']++;
+      else if (v<=50)  buckets['26-50%']++;
+      else if (v<=75)  buckets['51-75%']++;
+      else if (v<100)  buckets['76-99%']++;
+      else             buckets['100%+']++;
+    });
+    const colors = ['#e53e3e','#f6ad55','#f0c040','#52c974','#2E8B4A','#1B6B2B'];
+    ChartEngine.donutChart('pay-collection-dist',
+      Object.entries(buckets).map(([k,v],i)=>({ name:k, value:v, color:colors[i] }))
+    );
+  },
+
+  _agentLeaderboard(p) {
+    const byAgent = {};
+    p.forEach(r => { const a = r['Village Agent']||'Unknown'; byAgent[a]=(byAgent[a]||0)+Utils.parseNum(r['Actual Paid (TZS)']); });
+    const entries = Object.entries(byAgent).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,12);
+    const chart = ChartEngine.init('pay-agent-leaderboard');
+    if (!chart) return;
+    chart.setOption({
+      ...ChartEngine.baseOption(),
+      grid:{ top:10, right:100, bottom:10, left:20, containLabel:true },
+      xAxis:{ type:'value', axisLabel:{color:'#9ca3af',fontSize:11,formatter:v=>Utils.fmtCurrency(v,'')}, splitLine:{lineStyle:{color:'#f3f4f6'}} },
+      yAxis:{ type:'category', data:entries.map(([k])=>k), axisLine:{show:false}, axisTick:{show:false}, axisLabel:{color:'#6b7280',fontSize:11} },
+      series:[{ type:'bar', data:entries.map(([,v])=>Math.round(v)), barMaxWidth:16,
+        itemStyle:{ color:p=>ChartEngine.COLORS[p.dataIndex%ChartEngine.COLORS.length], borderRadius:[0,4,4,0] },
+        label:{ show:true, position:'right', color:'#6b7280', fontSize:11, formatter:p=>Utils.fmtCurrency(p.value,'') }
+      }],
+      tooltip:{ ...ChartEngine.baseOption().tooltip, trigger:'axis', formatter:p=>`${p[0].name}<br/>TZS ${Utils.fmtNum(p[0].value)}` }
+    });
+  },
+
+  _packageDemand(p) {
+    const counts = Utils.countBy(p, 'Package Name');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,10);
+    ChartEngine.hBarChart('pay-package-demand', entries.map(([k])=>k), entries.map(([,v])=>v));
+  },
+
+  _deliveryFunnel(total, delivered, fullPaid, partial, zero) {
+    const chart = ChartEngine.init('pay-delivery-funnel');
+    if (!chart) return;
+    chart.setOption({
+      ...ChartEngine.baseOption(),
+      tooltip:{ ...ChartEngine.baseOption().tooltip, trigger:'item', formatter:'{b}: {c}' },
+      series:[{ type:'funnel', width:'70%', left:'15%', top:20, bottom:20, sort:'none',
+        label:{ position:'inside', color:'#fff', fontSize:12, fontWeight:600 },
+        data:[
+          { value:total,     name:'Total Farmers',   itemStyle:{color:'#1B6B2B'} },
+          { value:fullPaid,  name:'Fully Paid',       itemStyle:{color:'#2E8B4A'} },
+          { value:delivered, name:'Delivered',        itemStyle:{color:'#52c974'} },
+          { value:partial,   name:'Partial Payers',   itemStyle:{color:'#f0c040'} }
+        ]
+      }]
+    });
+  },
+
+  _paymentSegments(over, full, partial, zero) {
+    ChartEngine.donutChart('pay-payment-segments', [
+      { name:'Overpaid (>100%)',  value:over,    color:'#1B6B2B' },
+      { name:'Fully Paid (100%)', value:full-over, color:'#2E8B4A' },
+      { name:'Partial (<100%)',   value:partial, color:'#f0c040' },
+      { name:'Unpaid (0%)',       value:zero,    color:'#e53e3e' }
+    ]);
+  },
+
+  _adoptionGrowth(p) {
+    const byMonth = {};
+    p.forEach(r => {
+      const d = r['Date of Finishing'] || r['DATE CREATED'] || '';
+      const mk = Utils.monthKey(d);
+      if (mk !== 'Unknown') byMonth[mk] = (byMonth[mk]||0)+1;
+    });
+    const months = Object.keys(byMonth).sort();
+    ChartEngine.lineChart('pay-adoption-growth',
+      months.map(Utils.monthLabel),
+      [{ name:'New Farmers', data: months.map(m => byMonth[m]||0) }]
+    );
+  },
+
+  _cumulativeRevenue(p) {
+    const byMonth = {};
+    p.forEach(r => {
+      const d = r['Date of Finishing'] || '';
+      const mk = Utils.monthKey(d);
+      if (mk !== 'Unknown') byMonth[mk] = (byMonth[mk]||0)+Utils.parseNum(r['Actual Paid (TZS)']);
+    });
+    const months = Object.keys(byMonth).sort();
+    let cumulative = 0;
+    const cumData = months.map(m => { cumulative += byMonth[m]||0; return Math.round(cumulative); });
+    ChartEngine.lineChart('pay-cumulative',
+      months.map(Utils.monthLabel),
+      [{ name:'Cumulative TZS', data: cumData }]
+    );
+  },
+
+  _villageReach(p) {
+    const counts = Utils.countBy(p, 'Village');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,15);
+    ChartEngine.hBarChart('pay-village-reach', entries.map(([k])=>k), entries.map(([,v])=>v));
+  },
+
+  _highCommitment(p) {
+    const highC = p.filter(r => Utils.parseNum(r['% of Package Cost Paid']) >= 100);
+    const byVillage = Utils.countBy(highC, 'Village');
+    const entries = Object.entries(byVillage).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,10);
+    ChartEngine.barChart('pay-high-commitment',
+      entries.map(([k])=>k),
+      [{ name:'High Commitment Farmers', data: entries.map(([,v])=>v), color:'#1B6B2B' }]
+    );
+  },
+
+  _renderInsights(p, { totalFarmers, totalActualPaid, collectionRate, deliveryRate, overpaidRate, financialInclusionRate, uniqueVillages, outstanding }) {
+    const el = document.getElementById('pay-insights');
+    if (!el) return;
+    const topAgent = (() => {
+      const byA = {};
+      p.forEach(r => { const a=r['Village Agent']||'Unknown'; byA[a]=(byA[a]||0)+Utils.parseNum(r['Actual Paid (TZS)']); });
+      const e = Object.entries(byA).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]);
+      return e.length ? e[0] : null;
+    })();
+
+    const insights = [
+      { icon: collectionRate>=80?'✅':'⚠️', type: collectionRate>=80?'green':collectionRate>=60?'yellow':'red',
+        title:`${collectionRate.toFixed(1)}% Overall Collection Rate`,
+        text: collectionRate>=80 ? 'Revenue collection is performing excellently. Farmers are meeting their financial commitments.'
+          : `Outstanding balance of ${Utils.fmtCurrency(outstanding)} requires follow-up with village agents and farmers.` },
+      { icon:'💰', type:'green',
+        title:`${Utils.fmtCurrency(totalActualPaid)} Total Revenue Collected`,
+        text:`From ${Utils.fmtNum(totalFarmers)} farmers across ${Utils.fmtNum(uniqueVillages)} villages. Average collection of ${Utils.fmtCurrency(totalActualPaid/totalFarmers)} per farmer.` },
+      { icon: deliveryRate>=80?'✅':'⚠️', type: deliveryRate>=80?'green':'yellow',
+        title:`${deliveryRate.toFixed(1)}% Delivery Completion Rate`,
+        text: deliveryRate>=80 ? 'Package delivery fulfillment is high. Operations are efficiently converting payments to deliveries.'
+          : 'Delivery rate is below target. Investigate logistics bottlenecks preventing timely package fulfillment.' },
+      { icon:'🏦', type:'blue',
+        title:`${financialInclusionRate.toFixed(1)}% Using Installment Payments`,
+        text:`${Utils.fmtNum(p.filter(r=>Utils.parseNum(r['Payment Counts'])>1).length)} farmers are paying in installments, indicating the program's financial flexibility is being used.` },
+      topAgent ? { icon:'🏆', type:'green',
+        title:`Top Agent: ${topAgent[0]}`,
+        text:`This village agent has collected ${Utils.fmtCurrency(topAgent[1])} — the highest in the program. Use as a benchmark for agent training.` } : null
+    ].filter(Boolean);
+
+    el.innerHTML = insights.map(ins => `
+      <div class="insight-card">
+        <div class="insight-icon ${ins.type}">${ins.icon}</div>
+        <div><div class="insight-title">${ins.title}</div><div class="insight-text">${ins.text}</div></div>
+      </div>`).join('');
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   DELIVERY INTELLIGENCE ENGINE  (Phase 4)
+═══════════════════════════════════════════════════════════ */
+const DeliveryEngine = {
+  render() {
+    const d = AppState.filtered.delivery;
+    if (!d.length) { this._empty(); return; }
+
+    const total         = d.length;
+    const totalInvest   = Utils.sumBy(d, 'Total Investment');
+    const avgInvest     = total > 0 ? totalInvest / total : 0;
+    const avgDelDays    = Utils.avgBy(d, 'Enrollment to delivery Days');
+    const avgAfterDel   = Utils.avgBy(d, 'Days After Delivery');
+    const avgNSP        = Utils.avgBy(d, 'NSP Score');
+    const villages      = Utils.unique(d, 'Village').length;
+    const zones         = Utils.unique(d, 'Zone').length;
+    const female        = d.filter(r => r['Gender']==='Female').length;
+    const femaleRatio   = total > 0 ? (female/total)*100 : 0;
+
+    // Delivery growth rate
+    const byMonth = {};
+    d.forEach(r => { const mk = Utils.monthKey(r['Delivery Date']); byMonth[mk]=(byMonth[mk]||0)+1; });
+    const months = Object.keys(byMonth).sort();
+    let growthRate = 0;
+    if (months.length >= 2) {
+      const cur = byMonth[months[months.length-1]];
+      const prv = byMonth[months[months.length-2]];
+      growthRate = prv > 0 ? ((cur-prv)/prv)*100 : 0;
+    }
+
+    // Program accessibility rate (avg enrollment-to-delivery)
+    const accessibilityRate = avgDelDays > 0 ? Math.max(0, 100 - (avgDelDays / 90 * 100)) : 0;
+
+    KPIEngine.render('del-biz-kpis', [
+      { icon:'🚚', label:'Total Farmers Delivered',    value: Utils.fmtNum(total),           rawValue: total, format:'num', trend: growthRate,
+        info:'Count of unique Farmer IDs who have received a package delivery. Core delivery outreach metric.' },
+      { icon:'💰', label:'Total Investment (TZS)',     value: Utils.fmtCurrency(totalInvest), rawValue: totalInvest,
+        info:'Sum of Total Investment across all delivered farmers. Total economic value distributed through deliveries.' },
+      { icon:'⏱️', label:'Avg Delivery Time (days)',   value: avgDelDays.toFixed(0)+'d',      rawValue: avgDelDays,
+        info:'Average Enrollment-to-Delivery Days. Lower = more efficient operations. Target: under 30 days.' },
+      { icon:'📈', label:'Delivery Growth Rate',       value: Utils.fmtPct(growthRate),       rawValue: Math.abs(growthRate), format:'pct',
+        info:'Month-over-month % change in deliveries. Formula: (Current Month − Previous Month) ÷ Previous Month × 100.' },
+      { icon:'💵', label:'Avg Revenue / Farmer',       value: Utils.fmtCurrency(avgInvest),   rawValue: avgInvest,
+        info:'Total Investment ÷ Total Farmers. Average economic contribution per delivered farmer.' },
+      { icon:'⭐', label:'Avg NSP Score',              value: avgNSP > 0 ? avgNSP.toFixed(1) : '—', rawValue: avgNSP,
+        info:'Average Net Satisfaction/Promoter Score. Higher = more satisfied farmers. Benchmark: >70 is excellent.' },
+      { icon:'🏘️', label:'Villages Reached',           value: Utils.fmtNum(villages),         rawValue: villages, format:'num',
+        info:'Unique villages where at least one farmer has received a delivery. Measures geographic delivery breadth.' },
+      { icon:'♀️', label:'Female Farmer Ratio',        value: Utils.fmtPct(femaleRatio),      rawValue: femaleRatio, format:'pct',
+        info:'Female Farmers ÷ Total Delivered × 100. Tracks gender inclusion in delivery outcomes.' },
+      { icon:'📅', label:'Avg Days Since Delivery',    value: avgAfterDel > 0 ? avgAfterDel.toFixed(0)+'d' : '—', rawValue: avgAfterDel,
+        info:'Average "Days After Delivery". Measures how mature the post-delivery support period is. Higher = longer follow-up opportunity.' },
+      { icon:'⚡', label:'Program Accessibility Rate', value: Utils.fmtPct(accessibilityRate), rawValue: accessibilityRate, format:'pct',
+        info:'Score measuring how quickly farmers receive packages after enrollment. Formula: Max(0, 100 − (Avg Days/90 × 100)).' }
+    ]);
+
+    KPIEngine.render('del-impact-kpis', [
+      { icon:'👥', label:'Farmers Impacted',           value: Utils.fmtNum(total),           rawValue: total, format:'num',
+        info:'Count of unique Farmer IDs. Total people reached by the delivery program.' },
+      { icon:'♀️', label:'Women Empowerment Score',    value: Utils.fmtPct(femaleRatio),      rawValue: femaleRatio, format:'pct',
+        info:'Female Farmers ÷ Total × 100. Core gender empowerment metric in delivery outcomes.' },
+      { icon:'⭐', label:'Farmer Satisfaction (NSP)',  value: avgNSP > 0 ? avgNSP.toFixed(1) : '—', rawValue: avgNSP,
+        info:'Average NSP Score from all delivered farmers. Measures happiness, trust, and likelihood to recommend the program.' },
+      { icon:'📅', label:'Avg Days Since Delivery',    value: avgAfterDel > 0 ? avgAfterDel.toFixed(0)+'d' : '—', rawValue: avgAfterDel,
+        info:'Maturity of post-delivery support window. Longer = more time for farmers to benefit and report outcomes.' },
+      { icon:'🏘️', label:'Rural Reach Index',          value: Utils.fmtNum(villages),         rawValue: villages, format:'num',
+        info:'Count of unique villages with at least one delivery. Measures penetration into underserved rural areas.' },
+      { icon:'💰', label:'Livelihood Investment',      value: Utils.fmtCurrency(totalInvest), rawValue: totalInvest,
+        info:'Sum of Total Investment distributed into communities. Represents total economic value injected by the program.' },
+      { icon:'⚡', label:'Program Accessibility',      value: Utils.fmtPct(accessibilityRate), rawValue: accessibilityRate, format:'pct',
+        info:'Speed score for enrollment-to-delivery operations. Higher = faster access to program benefits for farmers.' },
+      { icon:'🗺️', label:'Zones Covered',              value: Utils.fmtNum(zones),            rawValue: zones, format:'num',
+        info:'Number of unique operational zones with at least one delivery. Measures regional program equity.' },
+      { icon:'📈', label:'Delivery Growth Rate',       value: Utils.fmtPct(growthRate),       rawValue: Math.abs(growthRate), format:'pct',
+        info:'Ongoing delivery momentum. Positive growth = scaling impact. Negative = declining operational output.' },
+      { icon:'🌍', label:'Geographic Equity Score',    value: Utils.fmtPct(zones > 0 ? Math.min((villages/zones)*10,100) : 0), rawValue: 0,
+        info:'Villages per zone ratio normalized to 100. Higher = more equitable geographic distribution of deliveries.' }
+    ]);
+
+    /* ── Charts ── */
+    this._growthChart(byMonth, months);
+    this._packageDist(d);
+    this._zoneCoverage(d);
+    this._nspDist(d);
+    this._dailyDelivery(d);
+    this._timeline(d);
+    this._zoneEquity(d);
+    this._engagement(byMonth, months);
+    this._genderChart(d);
+    this._villageReach(d);
+    this._renderInsights(d, { total, totalInvest, avgDelDays, avgNSP, femaleRatio, growthRate, villages, zones, accessibilityRate });
+  },
+
+  _empty() {
+    ['del-biz-kpis','del-impact-kpis'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '<div style="padding:20px;color:var(--gray-400)">No data matches current filters.</div>';
+    });
+  },
+
+  _growthChart(byMonth, months) {
+    const sortedMonths = months.slice().sort();
+    const rates = sortedMonths.map((m,i) => {
+      if (i===0) return 0;
+      const c = byMonth[m]||0, p = byMonth[sortedMonths[i-1]]||0;
+      return p > 0 ? parseFloat(((c-p)/p*100).toFixed(1)) : 0;
+    });
+    const chart = ChartEngine.init('del-growth');
+    if (!chart) return;
+    chart.setOption({
+      ...ChartEngine.baseOption(),
+      xAxis:{ type:'category', data:sortedMonths.map(Utils.monthLabel), axisLabel:{color:'#9ca3af',fontSize:11}, axisTick:{show:false} },
+      yAxis:{ type:'value', axisLabel:{color:'#9ca3af',fontSize:11,formatter:v=>v+'%'}, splitLine:{lineStyle:{color:'#f3f4f6'}} },
+      series:[{ type:'bar', data:rates, barMaxWidth:36,
+        itemStyle:{ color:p=>rates[p.dataIndex]>=0?'#2E8B4A':'#e53e3e', borderRadius:[4,4,0,0] },
+        label:{ show:true, position:'top', color:'#6b7280', fontSize:11, formatter:v=>v.value+'%' }
+      }],
+      tooltip:{ ...ChartEngine.baseOption().tooltip, trigger:'axis', formatter:p=>`${p[0].name}<br/>Growth: ${p[0].value}%` }
+    });
+  },
+
+  _packageDist(d) {
+    const counts = Utils.countBy(d, 'Package Delivered');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,10);
+    ChartEngine.donutChart('del-package-dist', entries.map(([k,v]) => ({ name:k, value:v })));
+  },
+
+  _zoneCoverage(d) {
+    const counts = Utils.countBy(d, 'Zone');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]);
+    ChartEngine.barChart('del-zone-coverage', entries.map(([k])=>k), [{ name:'Deliveries', data:entries.map(([,v])=>v) }]);
+  },
+
+  _nspDist(d) {
+    const byZone = {};
+    d.forEach(r => { const z=r['Zone']||'Unknown'; if (!byZone[z]) byZone[z]=[]; const n=Utils.parseNum(r['NSP Score']); if (n>0) byZone[z].push(n); });
+    const zones = Object.keys(byZone).filter(k=>k!=='Unknown'&&byZone[k].length>0);
+    const avgs  = zones.map(z => parseFloat((byZone[z].reduce((a,b)=>a+b,0)/byZone[z].length).toFixed(1)));
+    ChartEngine.barChart('del-nsp-dist', zones, [{ name:'Avg NSP Score', data:avgs, color:'#c8e63a' }]);
+  },
+
+  _dailyDelivery(d) {
+    const byDate = {};
+    d.forEach(r => { const dt=r['Delivery Date']||''; if (dt) byDate[dt]=(byDate[dt]||0)+1; });
+    const dates = Object.keys(byDate).sort().slice(-30);
+    ChartEngine.lineChart('del-daily',
+      dates.map(d => { const dt=new Date(d); return isNaN(dt)?d:`${dt.getDate()} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getMonth()]}`; }),
+      [{ name:'Deliveries', data:dates.map(d=>byDate[d]||0) }]
+    );
+  },
+
+  _timeline(d) {
+    const buckets = { '0-7d':0, '8-14d':0, '15-30d':0, '31-60d':0, '61-90d':0, '90d+':0 };
+    d.forEach(r => {
+      const v = Utils.parseNum(r['Enrollment to delivery Days']);
+      if (v<=7) buckets['0-7d']++;
+      else if (v<=14) buckets['8-14d']++;
+      else if (v<=30) buckets['15-30d']++;
+      else if (v<=60) buckets['31-60d']++;
+      else if (v<=90) buckets['61-90d']++;
+      else buckets['90d+']++;
+    });
+    ChartEngine.barChart('del-timeline',
+      Object.keys(buckets),
+      [{ name:'Farmers', data:Object.values(buckets), color:'#2E8B4A' }]
+    );
+  },
+
+  _zoneEquity(d) {
+    const byZone = {};
+    d.forEach(r => { const z=r['Zone']||'Unknown'; byZone[z]=(byZone[z]||0)+Utils.parseNum(r['Total Investment']); });
+    const entries = Object.entries(byZone).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]);
+    const chart = ChartEngine.init('del-zone-equity');
+    if (!chart) return;
+    chart.setOption({
+      ...ChartEngine.baseOption(),
+      tooltip:{ ...ChartEngine.baseOption().tooltip, trigger:'item', formatter:p=>`${p.name}<br/>TZS ${Utils.fmtNum(p.value)}<br/>${p.percent}%` },
+      series:[{ type:'pie', radius:['0%','65%'], center:['50%','50%'],
+        data:entries.map(([k,v],i)=>({ name:k, value:Math.round(v), itemStyle:{color:ChartEngine.COLORS[i%ChartEngine.COLORS.length]} })),
+        label:{ color:'#6b7280', fontSize:11 }
+      }]
+    });
+  },
+
+  _engagement(byMonth, months) {
+    const sortedMonths = months.slice().sort();
+    ChartEngine.lineChart('del-engagement',
+      sortedMonths.map(Utils.monthLabel),
+      [{ name:'Deliveries', data:sortedMonths.map(m=>byMonth[m]||0) }]
+    );
+  },
+
+  _genderChart(d) {
+    const counts = Utils.countBy(d, 'Gender');
+    ChartEngine.donutChart('del-gender', [
+      { name:'Female', value:counts['Female']||0, color:'#2E8B4A' },
+      { name:'Male',   value:counts['Male']  ||0, color:'#c8e63a' }
+    ]);
+  },
+
+  _villageReach(d) {
+    const counts = Utils.countBy(d, 'Village');
+    const entries = Object.entries(counts).filter(([k])=>k&&k!=='Unknown').sort((a,b)=>b[1]-a[1]).slice(0,15);
+    ChartEngine.hBarChart('del-village-reach', entries.map(([k])=>k), entries.map(([,v])=>v));
+  },
+
+  _renderInsights(d, { total, totalInvest, avgDelDays, avgNSP, femaleRatio, growthRate, villages, zones, accessibilityRate }) {
+    const el = document.getElementById('del-insights');
+    if (!el) return;
+    const insights = [
+      { icon:'🚚', type:'green',
+        title:`${Utils.fmtNum(total)} Farmers Delivered Across ${zones} Zones`,
+        text:`${Utils.fmtCurrency(totalInvest)} in agricultural investment distributed to farmers in ${villages} villages.` },
+      { icon: avgDelDays<=30?'✅':'⚠️', type:avgDelDays<=30?'green':avgDelDays<=60?'yellow':'red',
+        title:`${avgDelDays.toFixed(0)}-Day Average Enrollment-to-Delivery`,
+        text: avgDelDays<=30 ? 'Delivery operations are fast and efficient. Farmers receive packages quickly after enrollment.'
+          : avgDelDays<=60  ? 'Delivery time is moderate. Investigate if logistics or supply chain delays can be reduced.'
+          : 'Delivery time is high. Investigate supply chain bottlenecks to improve farmer experience.' },
+      { icon: avgNSP>=70?'⭐':'📊', type:avgNSP>=70?'green':'yellow',
+        title:`${avgNSP > 0 ? avgNSP.toFixed(1) : 'N/A'} Average NSP Score`,
+        text: avgNSP>=70 ? 'Farmer satisfaction is excellent. The program is generating strong loyalty and positive experiences.'
+          : avgNSP>0 ? 'Farmer satisfaction is moderate. Identify and address common delivery quality complaints.'
+          : 'NSP score data not available for current selection.' },
+      { icon: femaleRatio>=50?'✅':'⚠️', type:femaleRatio>=50?'green':'yellow',
+        title:`${femaleRatio.toFixed(1)}% Women in Deliveries`,
+        text: femaleRatio>=50 ? 'Gender inclusion in delivery outcomes is strong. Women are fully represented.'
+          : 'Female delivery ratio below 50%. Ensure enrollment gender gaps are not amplified in delivery operations.' },
+      { icon: growthRate>0?'📈':'📉', type:growthRate>0?'green':'yellow',
+        title:`${Math.abs(growthRate).toFixed(1)}% Delivery ${growthRate>=0?'Growth':'Decline'}`,
+        text: growthRate>0 ? 'Delivery operations are scaling positively month-over-month.'
+          : 'Delivery volumes declined last month. Investigate field capacity and logistics constraints.' }
+    ];
+    el.innerHTML = insights.map(ins => `
+      <div class="insight-card">
+        <div class="insight-icon ${ins.type}">${ins.icon}</div>
+        <div><div class="insight-title">${ins.title}</div><div class="insight-text">${ins.text}</div></div>
+      </div>`).join('');
+  }
+};
 
 // Start on load
 document.addEventListener('DOMContentLoaded', init);
