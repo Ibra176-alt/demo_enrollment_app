@@ -46,77 +46,8 @@ body {
   transition: background-color 0.4s ease, color 0.35s ease;
 }
 /* Subtle grain/noise texture overlay */
-#main, #topbar, #filter-bar, .tab-page { position: relative; z-index: 1; }
+#main, #filter-bar, .tab-page { position: relative; z-index: 1; }
 
-/* ─── TOPBAR ─────────────────────────────────────────────── */
-#topbar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  height: var(--nav-h);
-  background: var(--glass-bg-strong);
-  border-bottom: 1px solid rgba(220,230,220,0.55);
-  display: flex; align-items: center;
-  padding: 0 24px;
-  gap: 20px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-}
-.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
-.brand-logo {
-  width: 40px; height: 40px;
-  background: linear-gradient(135deg, var(--green-800), var(--green-500));
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
-}
-.brand-logo svg { width: 24px; height: 24px; }
-.brand-text { display: flex; flex-direction: column; line-height: 1; }
-.brand-name { font-family: var(--font-display); font-size: 17px; font-weight: 900; color: var(--green-800); letter-spacing: -0.6px; }
-.brand-tagline { font-size: 10px; font-weight: 500; color: var(--green-600); letter-spacing: 0.5px; }
-
-.topbar-nav {
-  display: flex; align-items: center; gap: 2px;
-  flex: 1; overflow-x: auto;
-  scrollbar-width: none;
-}
-.topbar-nav::-webkit-scrollbar { display: none; }
-.tab-btn {
-  display: flex; align-items: center; gap: 7px;
-  padding: 8px 14px;
-  border: none; background: none; cursor: pointer;
-  font-family: var(--font); font-size: 13px; font-weight: 500;
-  color: var(--gray-500);
-  border-radius: var(--radius-sm);
-  white-space: nowrap;
-  transition: var(--transition);
-  position: relative;
-}
-.tab-btn:hover { background: var(--green-50); color: var(--green-700); }
-.tab-btn.active {
-  background: var(--green-50);
-  color: var(--green-800);
-  font-weight: 600;
-}
-.tab-btn.active::after {
-  content: '';
-  position: absolute; bottom: -1px; left: 14px; right: 14px;
-  height: 2.5px;
-  background: linear-gradient(90deg, var(--green-600), var(--yellow-green));
-  border-radius: 2px 2px 0 0;
-  animation: tabGlow 2.2s ease-in-out infinite;
-  box-shadow: 0 0 6px rgba(46,139,74,0.55);
-}
-.tab-icon { font-size: 15px; }
-
-.topbar-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.last-updated {
-  font-size: 11px; color: var(--gray-400); font-weight: 400;
-  display: flex; align-items: center; gap: 5px;
-}
-.sync-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--green-500);
-  animation: pulse-dot 2s infinite;
-}
-.sync-dot.syncing { background: var(--warning); animation: spin-dot 1s linear infinite; }
 
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
@@ -200,10 +131,11 @@ body {
 
 /* ─── MAIN CONTENT ───────────────────────────────────────── */
 #main {
-  margin-top: calc(var(--nav-h) + var(--filter-h));
+  margin-left: 240px;
   padding: 24px;
-  min-height: calc(100vh - var(--nav-h) - var(--filter-h));
+  min-height: 100vh;
 }
+@media(max-width:768px){#main{margin-left:0;padding:var(--sp-4);}}
 
 /* ─── TAB PAGES ──────────────────────────────────────────── */
 .tab-page { display: none; }
@@ -687,8 +619,31 @@ body {
   --brand:#43A047; --brand-light:#1B3A1E;
   --accent:#FFB300; --accent-light:#2A2210;
 }
+/* Sidebar */
+#sidebar{position:fixed;top:0;left:0;width:240px;height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;transition:transform 250ms ease;}
+.sidebar-brand{padding:var(--sp-6);display:flex;align-items:center;gap:var(--sp-3);border-bottom:1px solid var(--border);}
+.sidebar-logo{flex-shrink:0;}
+.sidebar-title{font-size:15px;font-weight:700;color:var(--text-1);display:block;}
+.sidebar-subtitle{font-size:11px;color:var(--text-3);display:block;}
+.sidebar-nav{flex:1;overflow-y:auto;padding:var(--sp-3) 0;}
+.nav-item{display:flex;align-items:center;gap:var(--sp-3);padding:0 var(--sp-6);height:40px;font-size:13px;color:var(--text-2);cursor:pointer;border-left:3px solid transparent;transition:all 150ms ease;}
+.nav-item:hover{background:var(--surface-hover);}
+.nav-item.active{background:var(--brand-light);color:var(--brand);border-left-color:var(--brand);font-weight:600;}
+.nav-item svg{width:18px;height:18px;flex-shrink:0;}
+.sidebar-footer{padding:var(--sp-4) var(--sp-6);border-top:1px solid var(--border);display:flex;align-items:center;gap:var(--sp-3);}
+.sidebar-btn{width:36px;height:36px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color 150ms ease;}
+.sidebar-btn:hover{border-color:var(--border-hover);}
+.sidebar-sync{display:flex;align-items:center;gap:var(--sp-2);font-size:11px;color:var(--text-3);margin-right:auto;}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--success);}
+.mobile-menu-btn{display:none;position:fixed;top:var(--sp-4);left:var(--sp-4);z-index:101;width:44px;height:44px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--surface);color:var(--text-1);cursor:pointer;align-items:center;justify-content:center;}
+.mobile-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:99;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  .mobile-menu-btn{display:flex;}
+  .mobile-backdrop.open{display:block;}
+}
 html[data-theme="dark"] body { background: var(--body-bg); }
-html[data-theme="dark"] #topbar,
 html[data-theme="dark"] #filter-bar {
   background: rgba(14, 26, 15, 0.88);
   border-color: rgba(80, 140, 80, 0.18);
@@ -700,8 +655,6 @@ html[data-theme="dark"] .filter-date {
   border-color: rgba(100,160,100,0.2);
 }
 html[data-theme="dark"] .filter-select option { background: #182519; }
-html[data-theme="dark"] .tab-btn:hover  { background: rgba(46,139,74,0.12); }
-html[data-theme="dark"] .tab-btn.active { background: rgba(46,139,74,0.15); }
 html[data-theme="dark"] .btn-ghost {
   background: rgba(255,255,255,0.06);
   color: var(--gray-600);
@@ -727,27 +680,16 @@ html[data-theme="dark"] .section-badge {
   background: rgba(46,139,74,0.15);
   border-color: rgba(46,139,74,0.25);
 }
-html[data-theme="dark"] .mob-btn .mob-label { color: var(--gray-400); }
-html[data-theme="dark"] #mobile-nav { box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
 html[data-theme="dark"] #back-to-top { box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
 /* Smooth transitions on common elements */
-#topbar, #filter-bar, .kpi-card, .chart-card, .insight-card,
+#filter-bar, .kpi-card, .chart-card, .insight-card,
 .ai-card, .rec-card, .exec-summary, .funnel-stage,
-.tab-btn, .btn, .filter-select, .filter-date, body {
+.btn, .filter-select, .filter-date, body {
   transition-property: background, background-color, border-color, color, box-shadow, opacity;
   transition-duration: 0.35s;
   transition-timing-function: ease;
 }
 
-/* Dark mode toggle button */
-#dark-mode-btn {
-  display: flex; align-items: center; justify-content: center;
-  width: 34px; height: 34px; border-radius: 50%;
-  background: var(--glass-bg); border: var(--glass-border);
-  cursor: pointer; font-size: 16px; line-height: 1;
-  transition: var(--transition); flex-shrink: 0;
-}
-#dark-mode-btn:hover { background: var(--glass-bg-strong); }
 
 /* ─── PAGE LOAD TRANSITION ────────────────────────────────── */
 html.page-entering #main {
@@ -807,51 +749,6 @@ html #main {
 /* Push above mobile nav on small screens */
 @media (max-width: 768px) { #back-to-top { bottom: 82px; right: 16px; } }
 
-/* ─── MOBILE BOTTOM NAV ──────────────────────────────────── */
-#mobile-nav {
-  display: none;
-  position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 1000;
-  background: var(--glass-bg-strong);
-  border: var(--glass-border);
-  border-radius: 20px;
-  padding: 6px 8px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.06);
-}
-.mob-nav-inner {
-  display: flex; justify-content: space-around; align-items: center;
-  position: relative;
-}
-/* Sliding pill indicator */
-#mob-nav-pill {
-  position: absolute; top: 0; bottom: 0;
-  background: var(--green-800);
-  border-radius: 14px;
-  transition: left 0.32s cubic-bezier(0.34,1.15,0.64,1),
-              width 0.32s cubic-bezier(0.34,1.15,0.64,1);
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.92;
-}
-.mob-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  border: none; background: none; cursor: pointer; padding: 6px 8px;
-  font-family: var(--font); position: relative; z-index: 1;
-  border-radius: 14px; transition: transform 0.2s cubic-bezier(0.34,1.2,0.64,1);
-  min-width: 44px;
-}
-.mob-btn.active { transform: scale(1.08); }
-.mob-btn .mob-icon {
-  font-size: 19px;
-  transition: transform 0.28s cubic-bezier(0.34,1.3,0.64,1), filter 0.2s;
-  display: block;
-}
-.mob-btn.active .mob-icon { transform: scale(1.18) translateY(-1px); filter: brightness(1.3); }
-.mob-btn .mob-label {
-  font-size: 9px; font-weight: 600; letter-spacing: 0.3px;
-  color: var(--gray-400);
-  transition: color 0.2s;
-}
-.mob-btn.active .mob-label { color: #fff; }
 @media (max-width: 1024px) {
   .chart-grid { grid-template-columns: 1fr; }
   .chart-grid-3 { grid-template-columns: repeat(2, 1fr); }
@@ -862,8 +759,6 @@ html #main {
   .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .chart-grid-3 { grid-template-columns: 1fr; }
   #filter-bar { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 8px; }
-  .topbar-nav { display: none; }
-  .tab-btn { font-size: 12px; padding: 6px 10px; }
 }
 @media (max-width: 480px) {
   .kpi-grid { grid-template-columns: 1fr; }
@@ -874,6 +769,20 @@ html #main {
 </style>
 </head>
 <body>
+<nav id="sidebar" role="tablist" aria-label="Main navigation">
+  <div class="sidebar-brand">
+    <div class="sidebar-logo"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="18" fill="var(--brand)"/><text x="18" y="23" text-anchor="middle" fill="white" font-size="18" font-weight="700" font-family="Inter,sans-serif">H</text></svg></div>
+    <div class="sidebar-brand-text"><span class="sidebar-title">HERVeg.05</span><span class="sidebar-subtitle">Intelligence Platform</span></div>
+  </div>
+  <div class="sidebar-nav" id="sidebarNav"></div>
+  <div class="sidebar-footer">
+    <button id="themeToggle" class="sidebar-btn" aria-label="Toggle dark mode"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
+    <div class="sidebar-sync" aria-live="polite"><span id="syncStatus" class="sync-dot"></span><span id="syncText">Ready</span></div>
+    <button id="refreshBtn" class="sidebar-btn" aria-label="Refresh data"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>
+  </div>
+</nav>
+<button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+<div id="mobileBackdrop" class="mobile-backdrop"></div>
 
 <!-- SCROLL PROGRESS -->
 <div id="scroll-progress"></div>
@@ -915,57 +824,6 @@ html #main {
   </div>
 </div>
 
-<!-- TOP NAVIGATION BAR -->
-<header id="topbar">
-  <a class="brand" href="#">
-    <div class="brand-logo">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C8 2 4 6 4 11c0 3 1.5 5.5 4 7l1 3h6l1-3c2.5-1.5 4-4 4-7 0-5-4-9-8-9z" fill="rgba(255,255,255,0.3)"/>
-        <path d="M12 4c1 2 2 5 1 9" stroke="#c8e63a" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M12 4C10 7 9 10 10 14" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-      </svg>
-    </div>
-    <div class="brand-text">
-      <span class="brand-name">HERVeg.05</span>
-      <span class="brand-tagline">small plots, big impact.</span>
-    </div>
-  </a>
-
-  <nav class="topbar-nav">
-    <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview')">
-      <span class="tab-icon">📊</span> Executive Overview
-    </button>
-    <button class="tab-btn" data-tab="enrollment" onclick="switchTab('enrollment')">
-      <span class="tab-icon">👥</span> Enrollment
-    </button>
-    <button class="tab-btn" data-tab="payment" onclick="switchTab('payment')">
-      <span class="tab-icon">💳</span> Payments
-    </button>
-    <button class="tab-btn" data-tab="delivery" onclick="switchTab('delivery')">
-      <span class="tab-icon">🚚</span> Delivery
-    </button>
-    <button class="tab-btn" data-tab="geo" onclick="switchTab('geo')">
-      <span class="tab-icon">🗺️</span> Geographic
-    </button>
-    <button class="tab-btn" data-tab="pipeline" onclick="switchTab('pipeline')">
-      <span class="tab-icon">🔄</span> Pipeline
-    </button>
-    <button class="tab-btn" data-tab="ai" onclick="switchTab('ai')">
-      <span class="tab-icon">🤖</span> AI Insights
-    </button>
-  </nav>
-
-  <div class="topbar-actions">
-    <div class="last-updated">
-      <div class="sync-dot" id="sync-dot"></div>
-      <span id="last-updated-txt">Loading...</span>
-    </div>
-    <button class="btn btn-ghost btn-sm" onclick="forceRefresh()">↻ Refresh</button>
-    <button id="dark-mode-btn" title="Toggle dark mode" onclick="toggleDarkMode()">🌙</button>
-    <button class="btn btn-ghost btn-sm" onclick="openConfig()">⚙️</button>
-    <button class="btn btn-ghost btn-sm" id="export-btn" onclick="showExportMenu()">⬇ Export</button>
-  </div>
-</header>
 
 <!-- FILTER BAR -->
 <div id="filter-bar">
@@ -1641,6 +1499,45 @@ const CONFIG = {
   }
 };
 
+
+const ICONS={overview:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',enrollment:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',payments:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>',delivery:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',geographic:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>',pipeline:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>',ai:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>'};
+
+function buildSidebar(){
+  const nav=document.getElementById('sidebarNav');
+  if(!nav)return;
+  const tabs=[
+    {id:'overview',label:'Overview',icon:ICONS.overview},
+    {id:'enrollment',label:'Enrollment',icon:ICONS.enrollment},
+    {id:'payment',label:'Payments',icon:ICONS.payments},
+    {id:'delivery',label:'Delivery',icon:ICONS.delivery},
+    {id:'geo',label:'Geographic',icon:ICONS.geographic},
+    {id:'pipeline',label:'Pipeline',icon:ICONS.pipeline},
+    {id:'ai',label:'AI Insights',icon:ICONS.ai}
+  ];
+  nav.innerHTML=tabs.map(t=>`<div class="nav-item${t.id==='overview'?' active':''}" role="tab" aria-selected="${t.id==='overview'}" aria-controls="page-${t.id}" data-tab="${t.id}">${t.icon}<span>${t.label}</span></div>`).join('');
+  nav.addEventListener('click',e=>{
+    const item=e.target.closest('.nav-item');
+    if(!item)return;
+    const tab=item.dataset.tab;
+    nav.querySelectorAll('.nav-item').forEach(n=>{n.classList.remove('active');n.setAttribute('aria-selected','false');});
+    item.classList.add('active');
+    item.setAttribute('aria-selected','true');
+    if(typeof switchTab==='function')switchTab(tab);
+    closeMobileMenu();
+  });
+}
+
+function closeMobileMenu(){
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('mobileBackdrop')?.classList.remove('open');
+}
+
+document.getElementById('mobileMenuBtn')?.addEventListener('click',()=>{
+  document.getElementById('sidebar')?.classList.toggle('open');
+  document.getElementById('mobileBackdrop')?.classList.toggle('open');
+});
+document.getElementById('mobileBackdrop')?.addEventListener('click',closeMobileMenu);
+
 /* ═══════════════════════════════════════════════════════════
    GLOBAL STATE
 ═══════════════════════════════════════════════════════════ */
@@ -2281,11 +2178,11 @@ const RefreshEngine = {
 ═══════════════════════════════════════════════════════════ */
 function switchTab(id) {
   document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>{n.classList.remove('active');n.setAttribute('aria-selected','false');});
   const page = document.getElementById('tab-' + id);
-  const btn  = document.querySelector(`[data-tab="${id}"]`);
+  const btn  = document.querySelector(`.nav-item[data-tab="${id}"]`);
   if (page) page.classList.add('active');
-  if (btn)  btn.classList.add('active');
+  if(btn){btn.classList.add('active');btn.setAttribute('aria-selected','true');}
   AppState.activeTab = id;
   renderActiveTab();
 }
@@ -3949,20 +3846,9 @@ const AIEngine = {
 };
 
 // Start on load
+buildSidebar();
 document.addEventListener('DOMContentLoaded', init);
 </script>
-<!-- MOBILE BOTTOM NAV -->
-<nav id="mobile-nav">
-  <div class="mob-nav-inner" id="mob-nav-inner">
-    <div id="mob-nav-pill"></div>
-    <button class="mob-btn active" data-mob="overview"   onclick="switchTab('overview')">  <span class="mob-icon">📊</span><span class="mob-label">Overview</span></button>
-    <button class="mob-btn"        data-mob="enrollment" onclick="switchTab('enrollment')"><span class="mob-icon">👥</span><span class="mob-label">Enroll</span></button>
-    <button class="mob-btn"        data-mob="payment"    onclick="switchTab('payment')">   <span class="mob-icon">💳</span><span class="mob-label">Pay</span></button>
-    <button class="mob-btn"        data-mob="delivery"   onclick="switchTab('delivery')">  <span class="mob-icon">🚚</span><span class="mob-label">Deliver</span></button>
-    <button class="mob-btn"        data-mob="geo"        onclick="switchTab('geo')">       <span class="mob-icon">🗺️</span><span class="mob-label">Map</span></button>
-    <button class="mob-btn"        data-mob="ai"         onclick="switchTab('ai')">        <span class="mob-icon">🤖</span><span class="mob-label">AI</span></button>
-  </div>
-</nav>
 
 <script>
 /* ── Phase 7: Final polish & performance ── */
@@ -3971,8 +3857,6 @@ document.addEventListener('DOMContentLoaded', init);
 const _html = document.documentElement;
 function applyTheme(dark) {
   _html.setAttribute('data-theme', dark ? 'dark' : 'light');
-  const btn = document.getElementById('dark-mode-btn');
-  if (btn) btn.textContent = dark ? '☀️' : '🌙';
   try { localStorage.setItem('hvg-theme', dark ? 'dark' : 'light'); } catch(e) {}
 }
 function toggleDarkMode() {
@@ -3986,6 +3870,8 @@ function toggleDarkMode() {
     applyTheme(saved ? saved === 'dark' : prefersDark);
   } catch(e) { applyTheme(false); }
 })();
+document.getElementById('themeToggle')?.addEventListener('click',toggleDarkMode);
+document.getElementById('refreshBtn')?.addEventListener('click',()=>{if(typeof forceRefresh==='function')forceRefresh();});
 
 // ── Page-load transition ──
 _html.classList.add('page-entering');
@@ -4006,47 +3892,6 @@ window.addEventListener('scroll', () => {
   if (window.scrollY > 400) _btt.classList.add('visible');
   else                       _btt.classList.remove('visible');
 }, { passive: true });
-
-// ── Mobile nav visibility + responsive ──
-function updateResponsive() {
-  const mob = document.getElementById('mobile-nav');
-  if (window.innerWidth <= 768) {
-    mob.style.display = 'block';
-    document.getElementById('main').style.paddingBottom = '96px';
-  } else {
-    mob.style.display = 'none';
-    document.getElementById('main').style.paddingBottom = '24px';
-  }
-  movePill(AppState.activeTab);
-}
-window.addEventListener('resize', updateResponsive);
-updateResponsive();
-
-// ── Sliding pill logic ──
-function movePill(activeId) {
-  const pill  = document.getElementById('mob-nav-pill');
-  const inner = document.getElementById('mob-nav-inner');
-  if (!pill || !inner) return;
-  const activeBtn = inner.querySelector(`[data-mob="${activeId}"]`);
-  if (!activeBtn) return;
-  const innerRect = inner.getBoundingClientRect();
-  const btnRect   = activeBtn.getBoundingClientRect();
-  pill.style.left   = (btnRect.left  - innerRect.left)  + 'px';
-  pill.style.top    = (btnRect.top   - innerRect.top)   + 'px';
-  pill.style.width  = btnRect.width  + 'px';
-  pill.style.height = btnRect.height + 'px';
-}
-// Trigger pill position after layout settles
-requestAnimationFrame(() => movePill(AppState.activeTab));
-
-// ── Sync mobile nav active state ──
-const _origSwitch = switchTab;
-window.switchTab = function(id) {
-  _origSwitch(id);
-  document.querySelectorAll('.mob-btn').forEach(b => b.classList.toggle('active', b.dataset.mob === id));
-  movePill(id);
-};
-}
 
 // Keyboard shortcut: numbers 1-7 switch tabs
 document.addEventListener('keydown', e => {
